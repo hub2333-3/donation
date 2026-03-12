@@ -1,0 +1,2178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>遗体捐献 - 生命的延续</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- 提前加载 JavaScript 文件，确保函数在页面元素解析前可用 -->
+    <script src="script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- 主页面 -->
+        <div id="home" class="page active">
+            <!-- 登录状态显示 -->
+            <div id="user-status" class="user-status" style="position: absolute; top: 20px; right: 20px; display: none; z-index: 100;">
+                <span id="user-name" style="color: #2c3e50; font-weight: bold; margin-right: 10px;"></span>
+                <button class="btn btn-secondary" onclick="logout()">退出</button>
+            </div>
+            
+            <!-- 登录注册按钮 -->
+            <div id="auth-buttons" class="auth-buttons" style="position: absolute; top: 20px; right: 20px; z-index: 100;">
+                <button class="btn btn-primary" onclick="showAuthModal('login')">登录</button>
+                <button class="btn btn-success" onclick="showAuthModal('register')" style="margin-left: 10px;">注册</button>
+            </div>
+            
+            <!-- 主题切换按钮 -->
+            <div class="theme-toggle" style="position: absolute; top: 20px; left: 20px; z-index: 100;">
+                <button id="theme-btn" class="theme-btn" onclick="toggleTheme()" title="切换主题">
+                    <span id="theme-icon">🌙</span>
+                    <span id="theme-text">暗色</span>
+                </button>
+            </div>
+            
+            <header>
+                <h1>生命的延续</h1>
+                <p>遗体捐献，让爱与希望传承</p>
+            </header>
+            
+            <main>
+                <section class="intro">
+                    <p>当生命走向终点，有人选择用最后的光芒照亮他人。遗体捐献，让逝者的生命在医学教育中延续，让无声的奉献成为医学生最珍贵的教科书。这不仅是对人类健康事业的贡献，更是生命价值的最高诠释——<strong>爱，永不消逝</strong>。</p>
+                </section>
+                
+                <section class="directions">
+                    <div class="direction-btn medical" onclick="showPage('medical')">
+                        <h3>我是医学生</h3>
+                        <p>了解医学教育的重要性</p>
+                    </div>
+                    <div class="direction-btn family" onclick="checkAndGoToFamily()">
+                        <h3>我是家属</h3>
+                        <p>温暖陪伴，共同缅怀</p>
+                    </div>
+                    <div class="direction-btn memorial" onclick="showPage('memorial')">
+                        <h3>我想参与纪念</h3>
+                        <p>缅怀捐献者，传递温暖</p>
+                    </div>
+                    <div class="direction-btn game" onclick="showPage('game')">
+                        <h3>遗体捐献负责人模拟器</h3>
+                        <p>扮演全程负责人，体验完整流程</p>
+                    </div>
+                </section>
+                
+                <!-- 加入我们 -->
+                <div class="join-us-sidebar">
+                    <h3>🤝 加入我们</h3>
+                    <p class="join-subtitle">成为志愿者，传递爱心</p>
+                    
+                    <div class="volunteer-mini-list">
+                        <a href="https://hszzyz.zhiyuanyun.com/" target="_blank" class="volunteer-mini-item" style="text-decoration: none; color: inherit; display: block;">
+                            <span class="mini-icon">🏥</span>
+                            <span class="mini-text">红十字会志愿者</span>
+                        </a>
+                        <a href="tables/重庆市遗体捐献自愿登记表.doc" download class="volunteer-mini-item" style="text-decoration: none;">
+                            <span class="mini-icon">🎓</span>
+                            <span class="mini-text">遗体捐献志愿者</span>
+                        </a>
+                        <div class="volunteer-mini-item" onclick="openVolunteerDetailModal('organ')">
+                            <span class="mini-icon">❤️</span>
+                            <span class="mini-text">器官捐献志愿者</span>
+                        </div>
+                        <div class="volunteer-mini-item" onclick="openVolunteerDetailModal('science')">
+                            <span class="mini-icon">📢</span>
+                            <span class="mini-text">科普志愿者</span>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <div class="extension-sidebar">
+                    <div class="extension-btn" onclick="showPage('extension')">
+                        <h3>📚 拓展资源</h3>
+                        <p>友站链接</p>
+                    </div>
+                </div>
+            </main>
+            
+            <footer>
+                <p>&copy; 2026 生命的延续 - 遗体捐献公益平台</p>
+                <p class="footer-note">本网站依托于省部级科普基地建立</p>
+            </footer>
+        </div>
+
+        <!-- 游戏主界面 -->
+        <div id="game" class="page">
+            <button class="btn back-btn" onclick="showPage('home')">返回首页</button>
+            <header>
+                <h1>遗体捐献负责人模拟器</h1>
+                <p>扮演遗体捐献全程负责人</p>
+            </header>
+            
+            <main class="game-main">
+                <!-- 游戏控制面板 -->
+                <div class="game-control">
+                    <!-- 角色信息面板 -->
+                    <div class="character-panel collapsible-panel" onclick="togglePanel(this)">
+                        <div class="panel-header">
+                            <h3>👤 角色信息</h3>
+                            <span class="panel-toggle">▼</span>
+                        </div>
+                        <div class="panel-content character-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">姓名：</span>
+                                <span class="stat-value" id="character-name">null</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">管理风格：</span>
+                                <span class="stat-value" id="character-management-style">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">沟通风格：</span>
+                                <span class="stat-value" id="character-family-style">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 同事聊天板块 -->
+                    <div class="chat-panel" id="chat-panel">
+                        <div class="panel-header" onclick="toggleChatPanel()">
+                            <h3>💬 同事交流</h3>
+                            <span class="panel-toggle" id="chat-panel-toggle">▼</span>
+                        </div>
+                        <div class="panel-content chat-content" id="chat-panel-content">
+                            <div class="chat-messages" id="chat-messages">
+                                <div class="chat-welcome">
+                                    <p>👋 欢迎来到同事交流区！</p>
+                                    <p style="font-size: 0.85rem; color: #666; margin-top: 5px;">与其他协调员交流工作经验</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-chat-start" onclick="event.stopPropagation(); startColleagueChat();" style="width: 100%; margin-top: 10px; padding: 10px; background: linear-gradient(135deg, #27ae60 0%, #229954 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem;">
+                                💭 发起交流
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 我的日记板块 -->
+                    <div class="diary-panel collapsible-panel" onclick="togglePanel(this)">
+                        <div class="panel-header">
+                            <h3>📔 我的日记</h3>
+                            <span class="panel-toggle">▼</span>
+                        </div>
+                        <div class="panel-content diary-content">
+                            <div class="diary-list" id="diary-list">
+                                <p class="diary-empty">暂无日记，事件后可生成或点击添加</p>
+                            </div>
+                            <button class="btn btn-diary-add" onclick="showDiaryEditor()" style="width: 100%; margin-top: 10px; padding: 10px; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem;">
+                                ✏️ 写日记
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 重置游戏按钮 -->
+                    <div class="reset-game-panel">
+                        <button class="btn btn-danger" onclick="resetGameDuringPlay()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; transition: all 0.3s;">
+                            🔄 重置游戏
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 游戏主区域 -->
+                <div class="game-content">
+                    <!-- 事件系统 -->
+                    <div class="event-system">
+                        <h3>当前事件</h3>
+                        <div class="event-container" id="event-container">
+                            <div class="event-card" id="event-card">
+                                <h4 id="event-title">欢迎加入</h4>
+                                <p id="event-description">作为遗体捐献全程负责人，你的职责是协调各方资源，确保捐献过程顺利进行。请做好准备，开始你的工作。</p>
+                                <div class="event-options" id="event-options">
+                                    <button class="btn event-option" onclick="startGame()">开始游戏</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 任务列表 -->
+                    <div class="task-list">
+                        <h3>任务</h3>
+                        <div class="tasks" id="tasks">
+                            <!-- 任务将通过JavaScript动态添加 -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右侧边栏 -->
+                <div class="right-sidebar">
+                    <!-- 设置按钮 -->
+                    <button class="settings-btn" onclick="showSettingsModal()">
+                        <span>⚙️</span>
+                        <span>设置</span>
+                    </button>
+                    
+                    <!-- 历史事件侧边栏 -->
+                    <div class="history-panel">
+                        <h3>📜 历史事件</h3>
+                        <div class="history-slider" id="history-slider">
+                            <div class="history-list" id="history-list">
+                                <p class="history-empty">暂无历史事件</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 统计面板 -->
+                    <div class="stats-panel">
+                        <h3>📊 统计</h3>
+                        <div class="stats">
+                            <div class="stat-item">
+                                <span class="stat-label">家属满意度：</span>
+                                <span class="stat-value" id="stats-satisfaction">null</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">医学贡献：</span>
+                                <span class="stat-value" id="stats-contribution">null</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">完成主题：</span>
+                                <span class="stat-value" id="stats-themes">null</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+            <footer>
+                <p>&copy; 2026 生命的延续 - 遗体捐献负责人模拟器</p>
+                <p class="footer-note">本网站依托于省部级科普基地建立</p>
+            </footer>
+        </div>
+
+        <!-- 医学生页面 -->
+        <div id="medical" class="page">
+            <button class="btn back-btn" onclick="showPage('home')">返回首页</button>
+            <header>
+                <h1>我是医学生</h1>
+                <p>遗体捐献，医学教育的基石</p>
+            </header>
+            
+            <main>
+                <section class="medical-content">
+                    <!-- 我们在行动 - 放在首位 -->
+                    <div class="action-section">
+                        <h3>我们在行动</h3>
+                        <p>参与纪念活动，缅怀捐献者，传递温暖与希望。</p>
+                        <button class="btn btn-primary" onclick="showPage('action')">查看活动详情</button>
+                    </div>
+                    
+                    <h2>医学教育的重要性</h2>
+                    <p>遗体捐献是医学教育中不可或缺的组成部分，它为医学生提供了宝贵的学习机会，帮助他们更好地理解人体结构和功能，为未来的医疗实践打下坚实的基础。</p>
+                    
+                    <h3>遗体捐献对医学教育的意义</h3>
+                    <ul class="importance-list">
+                        <li>提供真实的人体解剖学习机会，帮助医学生建立立体的人体结构概念</li>
+                        <li>培养医学生的人文关怀精神，让他们学会尊重生命、感恩奉献</li>
+                        <li>为医学研究提供重要素材，推动医学科学的发展和进步</li>
+                        <li>帮助医学生掌握临床技能，提高诊断和治疗能力</li>
+                        <li>促进医学教育与临床实践的紧密结合，培养高素质的医学人才</li>
+                    </ul>
+                    
+                    <h3>医学生的感悟</h3>
+                    <p>作为医学生，我们深知每一次解剖课的机会都来之不易。每一位遗体捐献者都是我们的无声老师，他们用自己的身体为我们打开了医学知识的大门。</p>
+                    <p>在解剖学习过程中，我们不仅学到了人体的结构和功能，更深刻体会到了生命的珍贵和奉献的伟大。这种感悟将伴随我们整个职业生涯，激励我们成为有爱心、有责任感的医生。</p>
+                    
+                    <h3>向捐献者致敬</h3>
+                    <p>每一位遗体捐献者都值得我们最崇高的敬意。他们在生命的最后时刻，选择了以另一种方式为社会做出贡献，这种无私奉献的精神将永远铭刻在我们心中。</p>
+                    <p>作为未来的医生，我们承诺将倍加珍惜每一次学习机会，努力掌握医学知识和技能，以实际行动回报捐献者的无私奉献，为人类健康事业贡献自己的力量。</p>
+                    
+                    <h3>加入我们</h3>
+                    <p>如果您希望了解更多关于遗体捐献的信息，或者想分享您的学习感悟，请联系我们。让我们一起传承捐献者的精神，为医学教育事业共同努力。</p>
+                </section>
+            </main>
+            
+            <footer>
+                <p>&copy; 2026 生命的延续 - 遗体捐献公益平台</p>
+                <p class="footer-note">本网站依托于省部级科普基地建立</p>
+            </footer>
+        </div>
+
+        <!-- 家属页面 -->
+        <div id="family" class="page">
+            <button class="btn back-btn" onclick="showPage('home')">返回首页</button>
+            <header>
+                <h1>我是家属</h1>
+                <p>温暖陪伴，共同缅怀</p>
+            </header>
+            
+            <main>
+                <section class="family-content">
+                    <div class="comfort-message">
+                        <p>生命虽已远去，但爱与回忆将永远长存。在这里，您可以记录与分享逝者的故事，让爱延续。</p>
+                    </div>
+                    
+                    <!-- 用户信息显示（登录后显示） -->
+                    <div id="family-user-info" class="user-info-section" style="display: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; margin-bottom: 30px; color: white;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h3 style="margin-bottom: 10px;">👤 <span id="family-user-name"></span></h3>
+                                <p style="opacity: 0.9; font-size: 0.9rem;">已上传 <span id="family-story-count">0</span> 个故事</p>
+                            </div>
+                            <button class="btn" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid white;" onclick="logout()">退出登录</button>
+                        </div>
+                    </div>
+                    
+                    <div class="upload-section">
+                        <h3>📝 分享回忆</h3>
+                        <p>在这里，您可以上传逝者的照片、文字等内容，记录那些珍贵的回忆。</p>
+                        
+                        <form id="uploadForm">
+                            <div class="form-group">
+                                <label for="uploadTitle">标题</label>
+                                <input type="text" id="uploadTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="uploadContent">内容</label>
+                                <textarea id="uploadContent" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="uploadImage">上传图片</label>
+                                <input type="file" id="uploadImage" accept="image/*">
+                            </div>
+                            <div class="privacy-option">
+                                <label><input type="radio" name="privacy" value="public" checked> 公开（将在纪念页面显示）</label>
+                                <label><input type="radio" name="privacy" value="private"> 不公开</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">上传</button>
+                        </form>
+                    </div>
+                    
+                    <div class="my-stories-section">
+                        <h3>📖 我的故事</h3>
+                        <p>这里展示了您上传的所有故事，您可以对它们进行修改或删除。</p>
+                        <div class="my-stories-list" id="myStoriesList">
+                            <!-- 故事将通过JavaScript动态添加 -->
+                        </div>
+                    </div>
+                    
+                    <div class="letter-generation-section">
+                        <h3>个性化信件生成</h3>
+                        <p>输入捐献者生前的话语、性格和外貌特征，我们将为您生成一封来自捐献者的个性化信件。</p>
+                        <div class="letter-form">
+                            <div class="form-group">
+                                <label for="donorWords">生前话语</label>
+                                <textarea id="donorWords" placeholder="请输入捐献者生前常说的话、口头禅或重要的话语..." rows="4"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="donorPersonality">性格特征</label>
+                                <textarea id="donorPersonality" placeholder="请描述捐献者的性格特点，如开朗、善良、幽默等..." rows="4"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="donorAppearance">外貌特征</label>
+                                <textarea id="donorAppearance" placeholder="请描述捐献者的外貌特征，如体型、发型、面部特征等..." rows="4"></textarea>
+                            </div>
+                            <button class="btn btn-primary" onclick="generateLetter()">生成信件</button>
+                            <div class="loading-indicator" id="loadingIndicator" style="display: none;">
+                                <p>信件生成中，请稍候...</p>
+                            </div>
+                        </div>
+                        <div class="letter-result" id="letterResult" style="display: none;">
+                            <h4>生成的信件</h4>
+                            <div class="letter-content" id="letterContent">
+                                <!-- 生成的信件内容将在这里显示 -->
+                            </div>
+                            <button class="btn btn-secondary" onclick="downloadLetter()">下载信件</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 实时信件回复功能 -->
+                    <div class="letter-chat-section">
+                        <h3>💌 实时信件回复</h3>
+                        <p>在这里，您可以与AI助手进行对话，倾诉思念之情，获得温暖的回应和慰藉。</p>
+                        
+                        <div class="chat-container" id="letterChatContainer">
+                            <div class="chat-messages" id="chatMessages">
+                                <div class="chat-message system-message">
+                                    <div class="message-avatar">🕊️</div>
+                                    <div class="message-content">
+                                        <p>您好，我是您的陪伴助手。在这里，您可以倾诉对亲人的思念，我会尽力给予您温暖的回应。</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="chat-input-area">
+                                <textarea id="chatInput" placeholder="请输入您想对亲人说的话..." rows="2"></textarea>
+                                <button class="btn btn-primary" onclick="sendChatMessage()" id="sendChatBtn">
+                                    <span>发送</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comfort-section">
+                        <h3>温暖寄语</h3>
+                        <p>"生命的意义不在于长度，而在于宽度。您的亲人用最后的奉献，为更多生命带来了希望。"</p>
+                        <p>"每一次回忆都是一次重逢，每一次分享都是一次传承。您的故事将成为他人的力量。"</p>
+                        <p>"我们与您同在，共同缅怀那些伟大的生命，共同传递爱的温暖。"</p>
+                    </div>
+                </section>
+            </main>
+            
+            <footer>
+                <p>&copy; 2026 生命的延续 - 遗体捐献公益平台</p>
+                <p class="footer-note">本网站依托于省部级科普基地建立</p>
+            </footer>
+        </div>
+
+        <!-- 纪念页面 -->
+        <div id="memorial" class="page">
+            <button class="btn back-btn" onclick="showPage('home')">返回首页</button>
+            <header>
+                <h1>纪念方向</h1>
+                <p>缅怀逝者，传递温暖</p>
+            </header>
+            
+            <main>
+                <section class="memorial-content">
+                    <!-- 轮动效果：展示捐献者简介和遗言 -->
+                    <div class="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item">
+                                <div style="text-align: center; margin-bottom: 20px;">
+                                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=black%20and%20white%20cartoon%20portrait%20of%20an%20elderly%20Chinese%20man%20with%20glasses%2C%20kind%20face%2C%20teacher%20style%2C%20simple%20line%20art&image_size=square" alt="张爷爷" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #34495e; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                                </div>
+                                <h3 style="text-align: center; margin-bottom: 15px;">张爷爷</h3>
+                                <p>享年85岁，生前是一名教师。他说："我一生教书育人，希望死后能继续为医学教育做贡献，让更多年轻人成为好医生。"</p>
+                                <p>遗言："生命的意义在于奉献，我愿意用最后的力量为社会做出贡献。"</p>
+                                <div class="epitaph">
+                                    <h4>碑文</h4>
+                                    <p>桃李满天下，一生育英才。</p>
+                                    <p>死后仍奉献，医学续传承。</p>
+                                    <p>精神永长存，光芒照后人。</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div style="text-align: center; margin-bottom: 20px;">
+                                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=black%20and%20white%20cartoon%20portrait%20of%20a%20middle-aged%20Chinese%20woman%2C%20nurse%20uniform%2C%20kind%20and%20compassionate%20expression%2C%20simple%20line%20art&image_size=square" alt="李阿姨" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #34495e; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                                </div>
+                                <h3 style="text-align: center; margin-bottom: 15px;">李阿姨</h3>
+                                <p>享年62岁，生前是一名护士。她说："我在医院工作了一辈子，深知医学教育的重要性，希望我的身体能帮助医学生更好地学习。"</p>
+                                <p>遗言："作为一名护士，我一直致力于照顾他人，现在我希望以另一种方式继续这份使命。"</p>
+                                <div class="epitaph">
+                                    <h4>碑文</h4>
+                                    <p>白衣天使心，护理献终身。</p>
+                                    <p>大爱无边界，遗体济医学。</p>
+                                    <p>仁心传千古，德泽润人间。</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div style="text-align: center; margin-bottom: 20px;">
+                                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=black%20and%20white%20cartoon%20portrait%20of%20a%20middle-aged%20Chinese%20man%2C%20worker%20style%2C%20strong%20build%2C%20kind%20face%2C%20simple%20line%20art&image_size=square" alt="王叔叔" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #34495e; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                                </div>
+                                <h3 style="text-align: center; margin-bottom: 15px;">王叔叔</h3>
+                                <p>享年70岁，生前是一名工人。他说："我没读过多少书，但我知道医学研究对人类健康很重要，希望我的捐献能帮助科学家找到更多治病的方法。"</p>
+                                <p>遗言："虽然我只是一个普通工人，但我希望能为社会做些有意义的事情。"</p>
+                                <div class="epitaph">
+                                    <h4>碑文</h4>
+                                    <p>平凡岗位上，默默献青春。</p>
+                                    <p>临终怀大爱，遗体捐医学。</p>
+                                    <p>平凡见伟大，精神励后人。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="carousel-control prev">&lt;</button>
+                        <button class="carousel-control next">&gt;</button>
+                    </div>
+                    
+                    <!-- 纪念墓碑和献花功能 -->
+                    <div class="memorial-site">
+                        <!-- 弹幕留言区域 - 浮动在墓碑上方 -->
+                        <div id="danmaku-container" style="
+                            position: relative;
+                            height: 80px;
+                            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+                            border-radius: 15px;
+                            overflow: hidden;
+                            margin-bottom: 15px;
+                            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                        "></div>
+                        
+                        <div class="tombstone" style="
+                            box-shadow: 
+                                0 0 20px rgba(0, 0, 0, 0.3),
+                                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+                            background: 
+                                linear-gradient(135deg, 
+                                    rgba(210, 210, 210, 0.9) 0%, 
+                                    rgba(180, 180, 180, 0.8) 50%, 
+                                    rgba(150, 150, 150, 0.9) 100%);
+                            border-radius: 5px;
+                            padding: 30px;
+                            position: relative;
+                            overflow: hidden;
+                        ">
+                            <div style="
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                right: 0;
+                                height: 1px;
+                                background: linear-gradient(90deg, 
+                                    transparent 0%, 
+                                    rgba(255, 255, 255, 0.6) 50%, 
+                                    transparent 100%);
+                            "></div>
+                            <h3 style="
+                                text-shadow: 
+                                    1px 1px 2px rgba(0, 0, 0, 0.5),
+                                    0 0 10px rgba(255, 255, 255, 0.3);
+                                color: #2c3e50;
+                                margin-bottom: 15px;
+                            ">生命永恒</h3>
+                            <p style="
+                                text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+                                color: #34495e;
+                                margin-bottom: 10px;
+                            ">致敬所有遗体捐献者</p>
+                            <p style="
+                                text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+                                color: #34495e;
+                            ">你们的奉献，让生命延续</p>
+                            <div style="
+                                position: absolute;
+                                bottom: 0;
+                                left: 0;
+                                right: 0;
+                                height: 1px;
+                                background: linear-gradient(90deg, 
+                                    transparent 0%, 
+                                    rgba(0, 0, 0, 0.3) 50%, 
+                                    transparent 100%);
+                            "></div>
+                        </div>
+                        <div class="message-input-inline" style="display: flex; gap: 8px; margin-bottom: 15px;">
+                            <input type="text" id="flower-message" placeholder="输入致敬留言..." style="flex: 1; padding: 10px 15px; border: 2px solid #667eea; border-radius: 20px; font-size: 0.9rem; outline: none;">
+                            <button id="submit-flower-message" class="btn btn-primary" style="padding: 10px 25px; border-radius: 20px; font-size: 0.9rem;">发送</button>
+                        </div>
+                        <div class="flowers" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+                            <button class="flower-btn">献花</button>
+                            <span class="flower-count">0</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 故事分享：家属上传的公开内容 -->
+                    <div class="stories-section">
+                        <h3>故事分享</h3>
+                        <p>这里展示了家属们分享的关于逝者的感人故事，让我们一起感受生命的温暖和力量。</p>
+                        <div class="stories-list">
+                            <!-- 故事将通过JavaScript动态添加 -->
+                        </div>
+                    </div>
+                    
+                    <!-- 新闻界面 -->
+                    <div class="news-section">
+                        <h3>相关新闻</h3>
+                        <div class="news-list">
+                            <div class="news-item">
+                                <h4>重庆市人体器官捐献纪念园正式启用，迎来两千群众</h4>
+                                <p>重庆市2019年遗体器官捐献缅怀纪念活动在璧山区举行，重庆市人体器官捐献纪念园内千人肃立，音乐低回。来自重庆市红十字会、重庆医科大学、陆军军医大学，以及各遗体（角膜）接收单位、各器官移植医院的领导和有关负责人，遗体、角膜、器官捐献者家属，志愿者代表、医学生代表等共计两千余人齐聚纪念园，共同缅怀逝者。</p>
+                                <a href="https://mp.weixin.qq.com/s?__biz=MjM5NTA1ODkzNQ==&mid=2650154807&idx=1&sn=80dd88694bc1ab2d5e66f1d84b36cb03&chksm=befcc2af898b4bb9c50e711b8a8f94a13c472c04866241e1874d2595269c7a248ca37f26c2a0" target="_blank">阅读更多</a>
+                            </div>
+                            <div class="news-item">
+                                <h4>创新驱动推进人体器官捐献事业高质量发展</h4>
+                                <p>2024年，重庆市红十字会人体器官捐献工作交出了一份令人瞩目的答卷。新增遗体（角膜）捐献志愿登记2.2万余人、人体器官捐献志愿登记9000余人，见证器官捐献181例，捐献例数创历史新高。全国首家"三献"爱心屋开创性地将无偿献血、造血干细胞血样采集和遗体器官捐献登记三项公益服务整合到一个平台。</p>
+                                <a href="https://mp.weixin.qq.com/s?__biz=MjM5NTA1ODkzNQ==&mid=2650246124&idx=2&sn=07039d1f821ed7f59a4ca67849657455&chksm=bf3cf3085fa5d4b22a4f4a2108c86a0b08a202e5838f04725570fbacc679e767494e45229702" target="_blank">阅读更多</a>
+                            </div>
+                            <div class="news-item">
+                                <h4>走近遗体捐献者：用生命延续生命</h4>
+                                <p>"宁愿医学生在我身上解剖千刀万刀，不愿医生在病人身上开错一刀。"在南京，遗体捐献志愿者有一个共同的名字，叫做"捐友"，这句话，是他们的信念。1996年，南京市一批离退休老同志自发成立"捐献遗体器官志愿者之友协会"，倡导去世后做到"三不、两献、一育"。</p>
+                                <a href="https://www.163.com/dy/article/J5CT24UF052583KJ.html" target="_blank">阅读更多</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 感人故事 -->
+                    <div class="news-section">
+                        <h3>感人故事</h3>
+                        <div class="news-list">
+                            <div class="news-item">
+                                <h4>武汉人鲁琍华不幸去世，家人兑现了最后心愿</h4>
+                                <p>69岁的武汉人鲁琍华因病离世，家属兑现了她生前的最后心愿——将遗体捐献给武汉市红十字会武大医学院用于医学研究，一对珍贵的眼角膜则捐献至武汉市红十字爱尔眼库。她的善举将帮助至少两名角膜盲症患者重见光明。更令人动容的是，她的丈夫在她登记捐献时也一同签署了遗体捐献志愿者登记表。</p>
+                                <a href="https://www.thepaper.cn/newsDetail_forward_32526377" target="_blank">阅读更多</a>
+                            </div>
+                            <div class="news-item">
+                                <h4>身躯止于此，大爱永流传</h4>
+                                <p>94岁的老党员陆凤喜女士与63岁的姜铭璋先生，于同日相继完成遗体捐献，将身躯献予祖国医学事业。拥有近70年党龄的陆凤喜女士生前是佳木斯铁路医院医务工作者，一生以医者仁心践行共产党员的初心使命。她说："自愿捐献遗体，供标本研究与科学探索，为推动祖国医学事业进步贡献力量，这是一名老共产党员的最大心愿。"</p>
+                                <a href="https://baijiahao.baidu.com/s?id=1854810602744659307&wfr=spider&for=pc" target="_blank">阅读更多</a>
+                            </div>
+                            <div class="news-item">
+                                <h4>57岁女记者捐遗体：用最后呼吸点亮医学明灯</h4>
+                                <p>山东无棣县57岁的徐沛琦因病离世，遵照遗愿，自愿将遗体无偿捐献给滨州医学院，成为无棣县首位遗体捐献者。她出生教师世家，曾任记者、人大代表、文联主席。面对死亡，她提前写下遗嘱："我读书、工作、写稿子，都是为了让别人活得更好；现在换一种方式继续活，挺好的。"</p>
+                                <a href="https://baijiahao.baidu.com/s?id=1856068026528037176&wfr=spider&for=pc" target="_blank">阅读更多</a>
+                            </div>
+                            <div class="news-item">
+                                <h4>大爱永存，佑安退休专家杨虹离世后捐献遗体</h4>
+                                <p>首都医科大学附属北京佑安医院妇产科原主任、退休专家杨虹走完了她64年的人生旅程。根据她的遗愿，将自己的遗体无偿捐献给首都医科大学，奉献给医学教育和医学研究事业。从医四十年，她致力于妊娠合并各类传染性疾病的诊断、治疗及危重症抢救。她说："作为一名医生，我要用最后的力量推动医学教育和医学研究的发展。"</p>
+                                <a href="https://wjw.beijing.gov.cn/xwzx_20031/jcdt/202410/t20241022_3925721.html" target="_blank">阅读更多</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                </section>
+            </main>
+            
+            <footer>
+                <p>&copy; 2026 生命的延续 - 遗体捐献公益平台</p>
+                <p class="footer-note">本网站依托于省部级科普基地建立</p>
+            </footer>
+        </div>
+        
+        <!-- 生命健康博物馆页面 -->
+        <div id="museum" class="page">
+            <button class="btn back-btn" onclick="showPage('home')">返回首页</button>
+            <header>
+                <h1>生命健康博物馆</h1>
+                <p>致敬无言良师，传承生命大爱</p>
+            </header>
+            
+            <main>
+                <!-- 子页面导航 -->
+                <div class="museum-nav">
+                    <button class="museum-tab active" onclick="showMuseumSection('virtual-tour')">捐献者故事</button>
+                    <button class="museum-tab" onclick="showMuseumSection('achievements')">医学教育</button>
+                    <button class="museum-tab" onclick="showMuseumSection('education')">致敬捐献</button>
+                </div>
+                
+                <!-- 捐献者故事区域 -->
+                <section id="virtual-tour" class="museum-section active">
+                    <h2>💝 捐献者故事</h2>
+                    <p>聆听无言良师的生命故事，感悟奉献的真谛</p>
+                    
+                    <div class="story-gallery">
+                        <div class="story-card">
+                            <div class="story-icon">👨‍🏫</div>
+                            <h3>退休教师的心愿</h3>
+                            <p>张老师一生教书育人，晚年选择捐献遗体继续为医学教育事业贡献力量。</p>
+                            <span class="story-tag">教育工作者</span>
+                        </div>
+                        <div class="story-card">
+                            <div class="story-icon">👩‍⚕️</div>
+                            <h3>护士长的最后遗愿</h3>
+                            <p>李护士长在医疗战线工作30年，深知医学教育的重要性，临终前叮嘱家人完成捐献。</p>
+                            <span class="story-tag">医疗工作者</span>
+                        </div>
+                        <div class="story-card">
+                            <div class="story-icon">👨‍🌾</div>
+                            <h3>农民的朴素心愿</h3>
+                            <p>王大爷不识一字却懂得大爱，他说："我没读过书，但让娃娃们学医，也算我做点贡献。"</p>
+                            <span class="story-tag">普通农民</span>
+                        </div>
+                        <div class="story-card">
+                            <div class="story-icon">👩‍🔬</div>
+                            <h3>科学家的生命接力</h3>
+                            <p>陈教授一生致力于癌症研究，去世后将遗体捐献用于医学研究，继续完成未竟的事业。</p>
+                            <span class="story-tag">科研工作者</span>
+                        </div>
+                        <div class="story-card">
+                            <div class="story-icon">👴</div>
+                            <h3>老红军的初心</h3>
+                            <p>刘老将军戎马一生，晚年仍想着为国家和人民做最后一点贡献。</p>
+                            <span class="story-tag">退伍军人</span>
+                        </div>
+                        <div class="story-card">
+                            <div class="story-icon">👩‍💼</div>
+                            <h3>普通母亲的伟大</h3>
+                            <p>赵妈妈独自抚养三个孩子长大，临终前唯一的愿望就是让医学进步能够帮助更多家庭。</p>
+                            <span class="story-tag">伟大母亲</span>
+                        </div>
+                    </div>
+                
+                </section>
+                
+                <!-- 医学教育区域 -->
+                <section id="achievements" class="museum-section">
+                    <h2>📚 医学教育意义</h2>
+                    <p>了解遗体捐献对医学教育的重要价值</p>
+                    
+                    <div class="edu-focus">
+                        <div class="edu-item">
+                            <div class="edu-icon">🔬</div>
+                            <div class="edu-content">
+                                <h3>解剖学习的基础</h3>
+                                <p>遗体捐献为医学生提供了最真实的学习材料，是理解人体结构的唯一途径。没有捐献者，就没有合格的医生。</p>
+                            </div>
+                        </div>
+                        <div class="edu-item">
+                            <div class="edu-icon">🧠</div>
+                            <div class="edu-content">
+                                <h3>培养敬畏之心</h3>
+                                <p>通过解剖学习，医学生不仅掌握知识，更学会了尊重生命、感恩奉献，这是医者仁心的基础。</p>
+                            </div>
+                        </div>
+                        <div class="edu-item">
+                            <div class="edu-icon">💊</div>
+                            <div class="edu-content">
+                                <h3>推动医学进步</h3>
+                                <p>捐献的遗体用于医学研究，帮助科学家攻克疾病，最终造福更多患者。每一份捐献都是生命的延续。</p>
+                            </div>
+                        </div>
+                        <div class="edu-item">
+                            <div class="edu-icon">👨‍⚕️</div>
+                            <div class="edu-content">
+                                <h3>培养优秀医生</h3>
+                                <p>扎实的解剖知识是临床技能的基础。捐献者帮助培养了一代又一代优秀的医疗工作者。</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-box">
+                        <h3>📊 数据一览</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-number">50,000+</div>
+                                <div class="stat-label">医学生受益人次</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">200+</div>
+                                <div class="stat-label">科研项目支持</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">10,000+</div>
+                                <div class="stat-label">培养执业医师</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 致敬捐献区域 -->
+                <section id="education" class="museum-section">
+                    <h2>🙏 致敬捐献</h2>
+                    <p>向伟大的遗体捐献者致以最崇高的敬意</p>
+                    
+                    <div class="tribute-wall">
+                        <div class="tribute-poem">
+                            <p class="poem-line">"生如夏花之绚烂"</p>
+                            <p class="poem-line">"死如秋叶之静美"</p>
+                            <p class="poem-author">—— 致敬无言良师</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tribute-messages">
+                        <h3>💬 家属寄语</h3>
+                        <div class="message-card">
+                            <p>"父亲生前常说，能帮助别人是一种幸福。完成他的遗愿，我感到骄傲。"</p>
+                            <span class="message-author">—— 张先生</span>
+                        </div>
+                        <div class="message-card">
+                            <p>"妈妈走了，但她的生命以另一种方式延续。每次想到她的奉献能帮助医学研究，我就感到欣慰。"</p>
+                            <span class="message-author">—— 李女士</span>
+                        </div>
+                        <div class="message-card">
+                            <p>"丈夫捐献的决定让我一开始不理解，但现在我为他骄傲。他用最后的礼物，帮助了那么多人。"</p>
+                            <span class="message-author">—— 王太太</span>
+                        </div>
+                    </div>
+                    
+                    <div class="pledge-section">
+                        <h3>📜 捐献登记</h3>
+                        <p>如果您也愿意成为遗体捐献志愿者，为医学教育事业贡献力量，请联系当地红十字会或相关机构。</p>
+                        <div class="pledge-info">
+                            <p>📞 咨询热线：当地红十字会</p>
+                            <p>📝 登记方式：线上申请或现场登记</p>
+                        </div>
+                    </div>
+                </section>
+            </main>
+            
+            <footer>
+                <p>&copy; 2026 生命的延续 - 生命健康博物馆</p>
+                <p class="footer-note">本网站依托于省部级科普基地建立</p>
+            </footer>
+        </div>
+        
+        <!-- 我们在行动页面 -->
+        <div id="action" class="page">
+            <button class="btn back-btn" onclick="showPage('medical')">返回医学生页面</button>
+            
+            <header class="action-page-header">
+                <h1>我们在行动</h1>
+                <p>参与纪念活动，缅怀捐献者</p>
+            </header>
+            
+            <main class="action-page-main">
+                <section class="action-content">
+                    <!-- 三行祭文活动 -->
+                    <div id="action-sanhang" class="action-item" style="background-color: #f8f9fa; border-radius: 10px; padding: 30px; margin-bottom: 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <h3 style="font-size: 1.8rem; color: #2c3e50; margin-bottom: 15px; border-bottom: 2px solid #3498db; padding-bottom: 10px;">📝 三行祭文</h3>
+                        <p style="font-size: 1.1rem; color: #555; margin-bottom: 25px; line-height: 1.6;">用简洁而深情的三行文字，表达对遗体捐献者的敬意和缅怀。</p>
+                        
+                        <div class="action-details">
+                            <h4 style="font-size: 1.3rem; color: #34495e; margin-bottom: 15px;">活动介绍</h4>
+                            <p style="font-size: 1rem; color: #555; margin-bottom: 20px; line-height: 1.6;">三行祭文是一种简洁而有力的表达方式，通过三行文字传递对逝者的思念和敬意。我们邀请所有医学生参与这个活动，用最真挚的情感，为那些无声的老师写下祭文。</p>
+                            
+                            <h4 style="font-size: 1.3rem; color: #34495e; margin-bottom: 15px;">参与方式</h4>
+                            <ol style="font-size: 1rem; color: #555; margin-bottom: 20px; line-height: 1.6; padding-left: 25px;">
+                                <li style="margin-bottom: 8px;">撰写三行祭文，内容要求真挚、感人，表达对捐献者的敬意和缅怀。</li>
+                                <li style="margin-bottom: 8px;">将祭文发送至我们的邮箱：memorial@lifecontinue.com。</li>
+                                <li>我们将选择优秀的祭文在纪念活动中展示，并颁发纪念品。</li>
+                            </ol>
+                            
+                            <h4 style="font-size: 1.3rem; color: #34495e; margin-bottom: 15px;">活动时间</h4>
+                            <p style="font-size: 1rem; color: #555; margin-bottom: 20px; line-height: 1.6;">全年开放，随时可投稿</p>
+                            
+                            <h4 style="font-size: 1.3rem; color: #34495e; margin-bottom: 15px;">优秀作品展示</h4>
+                            <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                                <button class="btn" id="btn-2024" style="flex: 1; background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%); color: #5d4e6d; border: none; padding: 12px 24px; border-radius: 25px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 15px rgba(210, 153, 194, 0.3); transition: all 0.3s ease;" onclick="showExcellentWorks('2024')">2024</button>
+                                <button class="btn" id="btn-2023" style="flex: 1; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #4a5568; border: none; padding: 12px 24px; border-radius: 25px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 15px rgba(168, 237, 234, 0.3); transition: all 0.3s ease;" onclick="showExcellentWorks('2023')">2023</button>
+                                <button class="btn" id="btn-2022" style="flex: 1; background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%); color: #5d4e6d; border: none; padding: 12px 24px; border-radius: 25px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 15px rgba(255, 154, 158, 0.3); transition: all 0.3s ease;" onclick="showExcellentWorks('2022')">2022</button>
+                            </div>
+                            <div id="excellent-works-container" style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
+                                <div class="poem-example" style="background: linear-gradient(135deg, #fefefe 0%, #f8f9fa 100%); border-left: 4px solid #3498db; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; transition: all 0.3s ease;" onclick="lightPoemCandle(0)">
+                                    <p style="font-size: 1.15rem; color: #2c3e50; line-height: 2; margin: 0; font-family: 'Georgia', 'SimSun', serif; letter-spacing: 1px;">您用无声的奉献，</p>
+                                    <p style="font-size: 1.15rem; color: #2c3e50; line-height: 2; margin: 0; font-family: 'Georgia', 'SimSun', serif; letter-spacing: 1px;">为我们打开医学的大门，</p>
+                                    <p style="font-size: 1.15rem; color: #2c3e50; line-height: 2; margin: 0; font-family: 'Georgia', 'SimSun', serif; letter-spacing: 1px;">您的精神将永远铭刻在我们心中。</p>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 12px; border-top: 1px dashed #ddd;">
+                                        <p style="font-size: 0.9rem; color: #7f8c8d; margin: 0; font-style: italic;">——医学生代表</p>
+                                        <div style="display: flex; align-items: center; gap: 6px;">
+                                            <span class="poem-candle-btn" id="poem-candle-0" style="font-size: 1.3rem; filter: grayscale(100%); transition: all 0.3s ease;">🕯️</span>
+                                            <span class="poem-candle-count" id="poem-candle-count-0" style="font-size: 0.85rem; color: #e67e22; font-weight: 600;">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="poem-example" style="background: linear-gradient(135deg, #fefefe 0%, #f8f9fa 100%); border-left: 4px solid #3498db; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; transition: all 0.3s ease;" onclick="lightPoemCandle(1)">
+                                    <p style="font-size: 1.15rem; color: #2c3e50; line-height: 2; margin: 0; font-family: 'Georgia', 'SimSun', serif; letter-spacing: 1px;">生命的最后一程，</p>
+                                    <p style="font-size: 1.15rem; color: #2c3e50; line-height: 2; margin: 0; font-family: 'Georgia', 'SimSun', serif; letter-spacing: 1px;">您选择了照亮他人的路，</p>
+                                    <p style="font-size: 1.15rem; color: #2c3e50; line-height: 2; margin: 0; font-family: 'Georgia', 'SimSun', serif; letter-spacing: 1px;">您是我们最尊敬的老师。</p>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 12px; border-top: 1px dashed #ddd;">
+                                        <p style="font-size: 0.9rem; color: #7f8c8d; margin: 0; font-style: italic;">——医学生代表</p>
+                                        <div style="display: flex; align-items: center; gap: 6px;">
+                                            <span class="poem-candle-btn" id="poem-candle-1" style="font-size: 1.3rem; filter: grayscale(100%); transition: all 0.3s ease;">🕯️</span>
+                                            <span class="poem-candle-count" id="poem-candle-count-1" style="font-size: 0.85rem; color: #e67e22; font-weight: 600;">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 三献活动 -->
+                    <div id="sanxian" class="action-item" style="background-color: #f8f9fa; border-radius: 10px; padding: 30px; margin-bottom: 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <h3 style="font-size: 1.8rem; color: #2c3e50; margin-bottom: 15px; border-bottom: 2px solid #3498db; padding-bottom: 10px;">🌟 三献活动</h3>
+                        <p style="font-size: 1.1rem; color: #555; margin-bottom: 25px; line-height: 1.6;">献血、献造血干细胞、献遗体和人体器官——用生命接力生命，用爱心传递希望。</p>
+                        
+                        <!-- 清明祭拜 -->
+                        <div id="qingming" class="action-subitem" style="background: white; border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                            <h4 style="font-size: 1.4rem; color: #2c3e50; margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 1.6rem;">🌸</span> 清明祭拜
+                            </h4>
+                            <p style="font-size: 1rem; color: #555; margin-bottom: 15px; line-height: 1.6;">慎终追远，缅怀无言良师，传承医者仁心。</p>
+                            
+                            <div style="font-size: 0.95rem; color: #666; line-height: 1.7;">
+                                <p style="margin-bottom: 10px;"><strong>活动介绍：</strong>每年清明节，我们组织医学生前往遗体捐献者纪念园，举行庄重的祭拜仪式。通过献花、默哀、朗诵祭文等形式，表达对无言良师的感恩与怀念。</p>
+                                <p style="margin-bottom: 10px;"><strong>活动内容：</strong>🌸 敬献花篮与鲜花 | 🕯️ 集体默哀 | 📜 朗诵三行祭文 | 🎵 合唱纪念歌曲 | ✍️ 书写心愿卡</p>
+                                <p><strong>活动时间：</strong>每年清明节前后，具体时间提前一周通知</p>
+                            </div>
+                            
+                            <!-- 活动图片展示 -->
+                            <div class="qingming-gallery" style="margin-top: 20px; padding-top: 20px; border-top: 1px dashed #ddd;">
+                                <h5 style="font-size: 1.1rem; color: #34495e; margin-bottom: 15px; text-align: center;">📷 活动剪影</h5>
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                                    <div class="qingming-img-item" onclick="openImageModal(0)">
+                                        <img src="./images/图片1.jpg" alt="清明祭拜活动1" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%)'; this.parentElement.innerHTML='<span style=font-size:2rem>🖼️</span><span style=font-size:0.85rem;color:#7f8c8d>图片加载失败</span>';">
+                                    </div>
+                                    <div class="qingming-img-item" onclick="openImageModal(1)">
+                                        <img src="./images/图片2.jpg" alt="清明祭拜活动2" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%)'; this.parentElement.innerHTML='<span style=font-size:2rem>🖼️</span><span style=font-size:0.85rem;color:#7f8c8d>图片加载失败</span>';">
+                                    </div>
+                                    <div class="qingming-img-item" onclick="openImageModal(2)">
+                                        <img src="./images/图片3.jpg" alt="清明祭拜活动3" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%)'; this.parentElement.innerHTML='<span style=font-size:2rem>🖼️</span><span style=font-size:0.85rem;color:#7f8c8d>图片加载失败</span>';">
+                                    </div>
+                                    <div class="qingming-img-item" onclick="openImageModal(3)">
+                                        <img src="./images/图片4.jpg" alt="清明祭拜活动4" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%)'; this.parentElement.innerHTML='<span style=font-size:2rem>🖼️</span><span style=font-size:0.85rem;color:#7f8c8d>图片加载失败</span>';">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 红十字会遗体与人体器官捐献缅怀纪念活动 -->
+                        <div id="hongshizihui" class="action-subitem" style="background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%); border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-left: 4px solid #e74c3c;">
+                            <h4 style="font-size: 1.4rem; color: #2c3e50; margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 1.6rem;">❤️</span> 参加红十字会遗体与人体器官捐献缅怀纪念活动
+                            </h4>
+                            <p style="font-size: 1rem; color: #555; margin-bottom: 15px; line-height: 1.6;">致敬捐献者，传递生命大爱，弘扬人道精神。</p>
+                            
+                            <div style="font-size: 0.95rem; color: #666; line-height: 1.7;">
+                                <p style="margin-bottom: 10px;"><strong>活动介绍：</strong>联合中国红十字会举办遗体与人体器官捐献缅怀纪念活动，向所有捐献者表达崇高敬意。通过庄重的纪念仪式，缅怀那些用生命延续生命的伟大捐献者。</p>
+                                <p style="margin-bottom: 10px;"><strong>活动内容：</strong>❤️ 捐献者家属慰问 | 🕯️ 烛光缅怀仪式 | 📜 诵读捐献者名录 | 🌹 敬献鲜花花篮 | 🤝 捐献志愿者登记咨询</p>
+                                <p><strong>活动时间：</strong>每年清明节期间，具体时间请关注红十字会官方通知</p>
+                            </div>
+                            
+                            <!-- 红十字会活动图片展示 - 横向滚动样式 -->
+                            <div class="hongshizihui-gallery" style="margin-top: 20px; padding-top: 20px; border-top: 1px dashed #e0b4b4;">
+                                <h5 style="font-size: 1.1rem; color: #c0392b; margin-bottom: 15px; text-align: center;">❤️ 活动掠影</h5>
+                                <div class="hongshizihui-scroll-container" style="display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; scrollbar-width: thin; scrollbar-color: #e74c3c #f5f5f5;">
+                                    <div class="hongshizihui-img-item" onclick="openHongshizihuiModal(0)" style="flex: 0 0 280px; height: 180px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2); transition: all 0.3s ease;">
+                                        <img src="./images/图片5.jpg" alt="红十字会缅怀活动1" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%)'; this.parentElement.innerHTML='<div style=display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;><span style=font-size:2.5rem>🖼️</span><span style=font-size:0.9rem;color:#e57373;margin-top:8px>图片加载失败</span></div>';">
+                                    </div>
+                                    <div class="hongshizihui-img-item" onclick="openHongshizihuiModal(1)" style="flex: 0 0 280px; height: 180px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2); transition: all 0.3s ease;">
+                                        <img src="./images/图片6.jpg" alt="红十字会缅怀活动2" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%)'; this.parentElement.innerHTML='<div style=display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;><span style=font-size:2.5rem>🖼️</span><span style=font-size:0.9rem;color:#e57373;margin-top:8px>图片加载失败</span></div>';">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 三献社会实践团 -->
+                        <div id="shijian" class="action-subitem" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-radius: 8px; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-left: 4px solid #4caf50;">
+                            <h4 style="font-size: 1.4rem; color: #2c3e50; margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 1.6rem;">🤝</span> 三献社会实践团
+                            </h4>
+                            <p style="font-size: 1rem; color: #555; margin-bottom: 15px; line-height: 1.6;">深入一线，亲身体验，用行动诠释医者仁心。</p>
+                            
+                            <div style="font-size: 0.95rem; color: #666; line-height: 1.7;">
+                                <p style="margin-bottom: 10px;"><strong>活动介绍：</strong>组织医学生前往红十字会、医学院、纪念园等机构开展暑期社会实践，深入了解三献工作的全流程，参与志愿服务，撰写实践报告。</p>
+                                <p style="margin-bottom: 10px;"><strong>实践内容：</strong>🏥 参观学习 | 🎗️ 志愿服务 | 📝 调研访谈 | 📊 报告撰写</p>
+                            </div>
+                            
+                            <!-- 三献社会实践团图片展示 - 瀑布流样式 -->
+                            <div class="shijian-gallery" style="margin-top: 20px; padding-top: 20px; border-top: 1px dashed #81c784;">
+                                <h5 style="font-size: 1.1rem; color: #2e7d32; margin-bottom: 15px; text-align: center;">🌟 实践风采</h5>
+                                <div class="shijian-masonry" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                                    <div class="shijian-img-item" onclick="openShijianModal(0)" style="grid-column: span 2; grid-row: span 2;">
+                                        <img src="./images/图片7.jpg" alt="团队成员聆听器官捐献者分享" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)'; this.parentElement.innerHTML='<div style=display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;><span style=font-size:2rem>🖼️</span><span style=font-size:0.85rem;color:#4caf50;margin-top:8px>图片加载失败</span></div>';">
+                                        <div class="shijian-img-caption">团队成员聆听器官捐献者分享</div>
+                                    </div>
+                                    <div class="shijian-img-item" onclick="openShijianModal(1)">
+                                        <img src="./images/图片8.jpg" alt="团队成员参观纪念园缅怀大体老师" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)'; this.parentElement.innerHTML='<div style=display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;><span style=font-size:2rem>🖼️</span><span style=font-size:0.85rem;color:#4caf50;margin-top:8px>图片加载失败</span></div>';">
+                                        <div class="shijian-img-caption">团队成员参观纪念园缅怀大体老师</div>
+                                    </div>
+                                    <div class="shijian-img-item" onclick="openShijianModal(2)">
+                                        <img src="./images/图片9.jpg" alt="社区"三献"宣讲" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)'; this.parentElement.innerHTML='<div style=display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;><span style=font-size:2rem>🖼️</span><span style=font-size:0.85rem;color:#4caf50;margin-top:8px>图片加载失败</span></div>';">
+                                        <div class="shijian-img-caption">社区"三献"宣讲</div>
+                                    </div>
+                                    <div class="shijian-img-item" onclick="openShijianModal(3)">
+                                        <img src="./images/图片10.jpg" alt="前往相关单位学习"三献"知识" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)'; this.parentElement.innerHTML='<div style=display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;><span style=font-size:2rem>🖼️</span><span style=font-size:0.85rem;color:#4caf50;margin-top:8px>图片加载失败</span></div>';">
+                                        <div class="shijian-img-caption">前往相关单位学习"三献"知识</div>
+                                    </div>
+                                    <div class="shijian-img-item" onclick="openShijianModal(4)">
+                                        <img src="./images/图片11.jpg" alt=""三献"活动街头推广" onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)'; this.parentElement.innerHTML='<div style=display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;><span style=font-size:2rem>🖼️</span><span style=font-size:0.85rem;color:#4caf50;margin-top:8px>图片加载失败</span></div>';">
+                                        <div class="shijian-img-caption">"三献"活动街头推广</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 解剖绘画大赛 -->
+                    <div id="huihua" class="action-item" style="background-color: #f8f9fa; border-radius: 10px; padding: 30px; margin-bottom: 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <h3 style="font-size: 1.8rem; color: #2c3e50; margin-bottom: 15px; border-bottom: 2px solid #3498db; padding-bottom: 10px;">🎨 解剖绘画大赛</h3>
+                        <p style="font-size: 1.1rem; color: #555; margin-bottom: 25px; line-height: 1.6;">用画笔描绘人体之美，以艺术诠释医学之魂。</p>
+                        
+                        <div class="action-details">
+                            <h4 style="font-size: 1.3rem; color: #34495e; margin-bottom: 15px;">活动介绍</h4>
+                            <p style="font-size: 1rem; color: #555; margin-bottom: 20px; line-height: 1.6;">解剖绘画大赛是医学生展示艺术才华与专业知识的舞台。参赛者通过精细的绘画，展现人体结构的精妙与生命的壮美，向无言良师致敬。</p>
+                            
+                            <h4 style="font-size: 1.3rem; color: #34495e; margin-bottom: 15px;">作品要求</h4>
+                            <ul style="font-size: 1rem; color: #555; margin-bottom: 20px; line-height: 1.6; padding-left: 25px;">
+                                <li style="margin-bottom: 8px;">内容：人体解剖结构、组织器官、医学相关主题</li>
+                                <li style="margin-bottom: 8px;">形式：手绘或数字绘画，单幅或系列作品</li>
+                                <li>需附作品说明，阐述创作理念与医学内涵</li>
+                            </ul>
+                            
+                            <h4 style="font-size: 1.3rem; color: #34495e; margin-bottom: 15px;">活动时间</h4>
+                            <p style="font-size: 1rem; color: #555; margin-bottom: 20px; line-height: 1.6;">具体日期请关注通知</p>
+                            
+                            <h4 style="font-size: 1.3rem; color: #34495e; margin-bottom: 15px;">优秀作品展示</h4>
+                            <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                                <button class="btn" style="flex: 1; background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #5d4e6d; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: 600;">2018</button>
+                            </div>
+                            <div style="background: linear-gradient(135deg, #fefefe 0%, #f8f9fa 100%); border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                                    <div class="artwork-card" onclick="openArtworkModal('images/anatomy-art-1.jpg', '作品一', '2018年解剖绘画大赛', 0)" style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s; cursor: pointer;">
+                                        <img src="images/anatomy-art-1.jpg" alt="优秀作品1" style="width: 100%; height: 200px; object-fit: cover;">
+                                        <div style="padding: 15px;">
+                                            <p style="font-size: 0.9rem; color: #2c3e50; margin: 0; font-weight: 600;">作品一</p>
+                                            <p style="font-size: 0.8rem; color: #7f8c8d; margin: 5px 0 0 0;">2018年解剖绘画大赛</p>
+                                            <div style="display: flex; align-items: center; gap: 5px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;">
+                                                <span class="like-btn" onclick="event.stopPropagation(); toggleLike(0)" style="cursor: pointer; font-size: 1.2rem; opacity: 0.5; transition: all 0.3s ease;">❤️</span>
+                                                <span class="like-count" id="like-count-0" style="font-size: 0.85rem; color: #e74c3c; font-weight: 600;">0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="artwork-card" onclick="openArtworkModal('images/anatomy-art-2.jpg', '作品二', '2018年解剖绘画大赛', 1)" style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s; cursor: pointer;">
+                                        <img src="images/anatomy-art-2.jpg" alt="优秀作品2" style="width: 100%; height: 200px; object-fit: cover;">
+                                        <div style="padding: 15px;">
+                                            <p style="font-size: 0.9rem; color: #2c3e50; margin: 0; font-weight: 600;">作品二</p>
+                                            <p style="font-size: 0.8rem; color: #7f8c8d; margin: 5px 0 0 0;">2018年解剖绘画大赛</p>
+                                            <div style="display: flex; align-items: center; gap: 5px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;">
+                                                <span class="like-btn" onclick="event.stopPropagation(); toggleLike(1)" style="cursor: pointer; font-size: 1.2rem; opacity: 0.5; transition: all 0.3s ease;">❤️</span>
+                                                <span class="like-count" id="like-count-1" style="font-size: 0.85rem; color: #e74c3c; font-weight: 600;">0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="artwork-card" onclick="openArtworkModal('images/anatomy-art-3.jpg', '作品三', '2018年解剖绘画大赛', 2)" style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s; cursor: pointer;">
+                                        <img src="images/anatomy-art-3.jpg" alt="优秀作品3" style="width: 100%; height: 200px; object-fit: cover;">
+                                        <div style="padding: 15px;">
+                                            <p style="font-size: 0.9rem; color: #2c3e50; margin: 0; font-weight: 600;">作品三</p>
+                                            <p style="font-size: 0.8rem; color: #7f8c8d; margin: 5px 0 0 0;">2018年解剖绘画大赛</p>
+                                            <div style="display: flex; align-items: center; gap: 5px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;">
+                                                <span class="like-btn" onclick="event.stopPropagation(); toggleLike(2)" style="cursor: pointer; font-size: 1.2rem; opacity: 0.5; transition: all 0.3s ease;">❤️</span>
+                                                <span class="like-count" id="like-count-2" style="font-size: 0.85rem; color: #e74c3c; font-weight: 600;">0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+            
+            <footer>
+                <p>&copy; 2026 生命的延续 - 遗体捐献公益平台</p>
+                <p class="footer-note">本网站依托于省部级科普基地建立</p>
+            </footer>
+        </div>
+    </div>
+    
+    <!-- 登录注册弹窗 -->
+    <div id="auth-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center;">
+        <div class="modal-content" style="background: white; padding: 40px; border-radius: 20px; max-width: 450px; width: 90%; position: relative;">
+            <button class="modal-close" onclick="closeAuthModal()" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; background: none; border: none; cursor: pointer; color: #999;">&times;</button>
+            
+            <div id="login-form-section">
+                <h2 style="text-align: center; color: #667eea; margin-bottom: 30px;">🔐 用户登录</h2>
+                <form id="modal-login-form">
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="modal-login-username" style="display: block; margin-bottom: 8px; color: #333;">用户名</label>
+                        <input type="text" id="modal-login-username" required style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="modal-login-password" style="display: block; margin-bottom: 8px; color: #333;">密码</label>
+                        <input type="password" id="modal-login-password" required style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem;">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem;">登录</button>
+                </form>
+                <p style="text-align: center; margin-top: 20px; color: #666;">还没有账号？<a href="#" onclick="showAuthModal('register'); return false;" style="color: #667eea;">立即注册</a></p>
+            </div>
+            
+            <div id="register-form-section" style="display: none;">
+                <h2 style="text-align: center; color: #27ae60; margin-bottom: 30px;">📝 用户注册</h2>
+                <form id="modal-register-form">
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="modal-register-username" style="display: block; margin-bottom: 8px; color: #333;">用户名</label>
+                        <input type="text" id="modal-register-username" required style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="modal-register-password" style="display: block; margin-bottom: 8px; color: #333;">密码</label>
+                        <input type="password" id="modal-register-password" required style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="modal-confirm-password" style="display: block; margin-bottom: 8px; color: #333;">确认密码</label>
+                        <input type="password" id="modal-confirm-password" required style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem;">
+                    </div>
+                    <button type="submit" class="btn btn-success" style="width: 100%; padding: 15px; font-size: 1.1rem;">注册</button>
+                </form>
+                <p style="text-align: center; margin-top: 20px; color: #666;">已有账号？<a href="#" onclick="showAuthModal('login'); return false;" style="color: #667eea;">立即登录</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 家属问候弹窗 -->
+    <div id="family-greeting-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1001; justify-content: center; align-items: center;">
+        <div class="modal-content" style="background: linear-gradient(135deg, #fff8e7 0%, #ffecb3 100%); padding: 40px; border-radius: 20px; max-width: 600px; width: 90%; position: relative; border: 3px solid #f39c12;">
+            <button class="modal-close" onclick="closeFamilyGreetingModal()" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; background: none; border: none; cursor: pointer; color: #999;">&times;</button>
+            
+            <div id="family-greeting-content" style="text-align: center;">
+                <div style="font-size: 4rem; margin-bottom: 20px;">💐</div>
+                <h2 style="color: #e67e22; margin-bottom: 20px;">亲爱的家属朋友，</h2>
+                <div id="greeting-text" style="font-size: 1.1rem; line-height: 2; color: #333; padding: 20px; background: rgba(255,255,255,0.7); border-radius: 10px; margin-bottom: 30px;">
+                    <!-- AI生成的内容将显示在这里 -->
+                </div>
+                <p style="color: #888; font-size: 0.9rem; margin-bottom: 20px;">您的故事正在温暖着更多人 💕</p>
+                <button class="btn btn-primary" onclick="closeFamilyGreetingModal()" style="padding: 12px 40px; font-size: 1.1rem;">我知道了</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 拓展内容页面 -->
+    <div id="extension" class="page">
+        <button class="btn back-btn" onclick="showPage('home')">返回首页</button>
+        <header>
+            <h1>拓展内容</h1>
+            <p>友站链接等更多资源</p>
+        </header>
+        
+        <main>
+            <section class="extension-content">
+                <!-- 友站链接 -->
+                <div class="extension-section-item">
+                    <h3>🔗 友站链接</h3>
+                    <div class="friend-links">
+                        <a href="https://www.redcross.org.cn/" target="_blank" class="friend-link">
+                            <span class="link-icon">❤️</span>
+                            <span class="link-name">中国红十字会</span>
+                            <span class="link-desc">器官捐献官方宣传网站</span>
+                        </a>
+                        <a href="https://register.codac.org.cn/front_terminal/pc_terminal/index.html" target="_blank" class="friend-link">
+                            <span class="link-icon">🏥</span>
+                            <span class="link-name">中国人体器官捐献管理中心</span>
+                            <span class="link-desc">器官捐献官方信息平台</span>
+                        </a>
+                        <a href="https://www.mca.gov.cn/" target="_blank" class="friend-link">
+                            <span class="link-icon">🏛️</span>
+                            <span class="link-name">民政部</span>
+                            <span class="link-desc">遗体捐献相关管理部门</span>
+                        </a>
+                        <a href="https://www.nhc.gov.cn/" target="_blank" class="friend-link">
+                            <span class="link-icon">🩺</span>
+                            <span class="link-name">国家卫生健康委员会</span>
+                            <span class="link-desc">医疗卫生主管部门</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 贡献说明 -->
+                <div class="contribution-note">
+                    <h3>💝 感谢支持</h3>
+                    <p>以上资源均来自官方渠道和友好合作网站，感谢各机构对遗体捐献公益事业的支持。</p>
+                    <p>如有任何建议或发现链接失效，请联系我们。</p>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>&copy; 2026 生命的延续 - 拓展资源</p>
+            <p class="footer-note">本网站依托于省部级科普基地建立</p>
+        </footer>
+    </div>
+    
+    <!-- 游戏入职弹窗 -->
+    <div id="game-start-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1001; justify-content: center; align-items: center;">
+        <div class="game-start-card" style="background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%); border-radius: 20px; max-width: 500px; width: 90%; max-height: 85vh; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; overflow-y: auto;">
+            <!-- 装饰顶部 -->
+            <div style="height: 8px; background: linear-gradient(90deg, #3498db, #2ecc71);"></div>
+            
+            <!-- 关闭按钮 -->
+            <button onclick="closeGameStartModal()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer; transition: color 0.3s;">&times;</button>
+            
+            <!-- 图标 -->
+            <div style="text-align: center; padding: 30px 30px 10px;">
+                <div style="font-size: 4rem; margin-bottom: 15px;">🏥</div>
+            </div>
+            
+            <!-- 入职描述 -->
+            <div style="padding: 0 35px 25px; text-align: center;">
+                <h2 style="color: #2c3e50; font-size: 1.5rem; margin-bottom: 20px; font-weight: 600;">欢迎加入遗体捐献协调中心</h2>
+                <div style="background: linear-gradient(135deg, #e8f4f8 0%, #f0f8f0 100%); border-radius: 12px; padding: 20px; margin-bottom: 25px; border-left: 4px solid #3498db;">
+                    <p style="color: #34495e; line-height: 2; font-size: 1rem; text-align: left;">
+                        一个晴朗的下午，你收到了来自市遗体捐献协调中心的入职通知。从此刻起，你将成为连接生命与医学的桥梁，用专业和温暖陪伴每一个捐献家庭走过最艰难的时刻。
+                    </p>
+                    <p style="color: #5d8a66; line-height: 1.8; font-size: 0.95rem; margin-top: 15px; font-style: italic; text-align: center;">
+                        "每一个无声的奉献，都值得被温柔以待。"
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 用户名输入 -->
+            <div style="padding: 0 35px 20px;">
+                <label style="display: block; color: #2c3e50; font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">
+                    <span style="margin-right: 8px;">👤</span>请输入您的姓名
+                </label>
+                <input type="text" id="player-name-input" placeholder="请输入姓名开始游戏..." style="width: 100%; padding: 15px 20px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem; transition: all 0.3s; box-sizing: border-box;" onfocus="this.style.borderColor='#3498db'; this.style.boxShadow='0 0 0 3px rgba(52,152,219,0.1)';" onblur="this.style.borderColor='#e0e0e0'; this.style.boxShadow='none';">
+                <p style="color: #888; font-size: 0.8rem; margin-top: 8px; margin-bottom: 0;">这个名字将伴随您完成整个协调工作</p>
+            </div>
+            
+            <!-- 工作偏好设置 -->
+            <div style="padding: 0 35px 25px;">
+                <label style="display: block; color: #2c3e50; font-size: 0.95rem; margin-bottom: 15px; font-weight: 500;">
+                    <span style="margin-right: 8px;">⚙️</span>请选择您的工作偏好
+                </label>
+                
+                <!-- 管理偏好 -->
+                <div style="margin-bottom: 20px;">
+                    <p style="color: #34495e; font-size: 0.9rem; margin-bottom: 10px; font-weight: 500;">管理风格：</p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 10px 15px; background: #f8f9fa; border-radius: 8px; cursor: pointer; transition: all 0.3s; flex: 1; min-width: 120px;" onmouseover="this.style.background='#e8f4f8'" onmouseout="this.style.background='#f8f9fa'">
+                            <input type="radio" name="management-style" value="efficient" checked style="cursor: pointer;">
+                            <span style="color: #2c3e50; font-size: 0.9rem;">⚡ 高效务实</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 10px 15px; background: #f8f9fa; border-radius: 8px; cursor: pointer; transition: all 0.3s; flex: 1; min-width: 120px;" onmouseover="this.style.background='#e8f4f8'" onmouseout="this.style.background='#f8f9fa'">
+                            <input type="radio" name="management-style" value="caring" style="cursor: pointer;">
+                            <span style="color: #2c3e50; font-size: 0.9rem;">💝 温情关怀</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 10px 15px; background: #f8f9fa; border-radius: 8px; cursor: pointer; transition: all 0.3s; flex: 1; min-width: 120px;" onmouseover="this.style.background='#e8f4f8'" onmouseout="this.style.background='#f8f9fa'">
+                            <input type="radio" name="management-style" value="balanced" style="cursor: pointer;">
+                            <span style="color: #2c3e50; font-size: 0.9rem;">⚖️ 平衡兼顾</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- 家属接触偏好 -->
+                <div>
+                    <p style="color: #34495e; font-size: 0.9rem; margin-bottom: 10px; font-weight: 500;">家属沟通风格：</p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 10px 15px; background: #f8f9fa; border-radius: 8px; cursor: pointer; transition: all 0.3s; flex: 1; min-width: 120px;" onmouseover="this.style.background='#e8f4f8'" onmouseout="this.style.background='#f8f9fa'">
+                            <input type="radio" name="family-style" value="professional" checked style="cursor: pointer;">
+                            <span style="color: #2c3e50; font-size: 0.9rem;">📋 专业理性</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 10px 15px; background: #f8f9fa; border-radius: 8px; cursor: pointer; transition: all 0.3s; flex: 1; min-width: 120px;" onmouseover="this.style.background='#e8f4f8'" onmouseout="this.style.background='#f8f9fa'">
+                            <input type="radio" name="family-style" value="empathetic" style="cursor: pointer;">
+                            <span style="color: #2c3e50; font-size: 0.9rem;">🤗 共情陪伴</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 10px 15px; background: #f8f9fa; border-radius: 8px; cursor: pointer; transition: all 0.3s; flex: 1; min-width: 120px;" onmouseover="this.style.background='#e8f4f8'" onmouseout="this.style.background='#f8f9fa'">
+                            <input type="radio" name="family-style" value="gentle" style="cursor: pointer;">
+                            <span style="color: #2c3e50; font-size: 0.9rem;">🌸 温柔细腻</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <p style="color: #888; font-size: 0.75rem; margin-top: 12px; margin-bottom: 0; line-height: 1.5;">
+                    💡 您的偏好将影响游戏中的事件类型和对话风格
+                </p>
+            </div>
+            
+            <!-- API 选择 -->
+            <div style="padding: 0 35px 25px;">
+                <label style="display: block; color: #2c3e50; font-size: 0.95rem; margin-bottom: 15px; font-weight: 500;">
+                    <span style="margin-right: 8px;">🔑</span>AI 服务选择
+                </label>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <label style="display: flex; align-items: center; gap: 10px; padding: 12px 15px; background: #f8f9fa; border-radius: 8px; cursor: pointer; transition: all 0.3s; border: 2px solid transparent;" onmouseover="this.style.background='#e8f4f8'" onmouseout="if(!document.querySelector('input[name="api-mode"]:checked').value==='local')this.style.background='#f8f9fa'">
+                        <input type="radio" name="api-mode" value="local" style="cursor: pointer;">
+                        <div style="flex: 1;">
+                            <span style="color: #2c3e50; font-size: 0.95rem; font-weight: 500;">📱 本地模式</span>
+                            <p style="color: #666; font-size: 0.8rem; margin: 3px 0 0 0;">使用预设事件，无需网络，但体验受限</p>
+                        </div>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; padding: 12px 15px; background: #e8f4f8; border-radius: 8px; cursor: pointer; transition: all 0.3s; border: 2px solid #3498db;" onmouseover="this.style.background='#d0e8f5'" onmouseout="this.style.background='#e8f4f8'">
+                        <input type="radio" name="api-mode" value="default" checked style="cursor: pointer;">
+                        <div style="flex: 1;">
+                            <span style="color: #2c3e50; font-size: 0.95rem; font-weight: 500;">☁️ 默认 AI 服务</span>
+                            <p style="color: #666; font-size: 0.8rem; margin: 3px 0 0 0;">使用内置 API，完整游戏体验（推荐）</p>
+                        </div>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; padding: 12px 15px; background: #f8f9fa; border-radius: 8px; cursor: pointer; transition: all 0.3s; border: 2px solid transparent;" onmouseover="this.style.background='#e8f4f8'" onmouseout="if(!document.querySelector('input[name="api-mode"]:checked').value==='local')this.style.background='#f8f9fa'">
+                        <input type="radio" name="api-mode" value="custom" style="cursor: pointer;">
+                        <div style="flex: 1;">
+                            <span style="color: #2c3e50; font-size: 0.95rem; font-weight: 500;">⚙️ 自定义 API</span>
+                            <p style="color: #666; font-size: 0.8rem; margin: 3px 0 0 0;">使用自己的 API Key（需先设置）</p>
+                        </div>
+                    </label>
+                </div>
+                <p style="color: #888; font-size: 0.75rem; margin-top: 10px; margin-bottom: 0; line-height: 1.5;">
+                    🔒 安全提示：默认 API 仅供演示，建议后续使用自己的 API
+                </p>
+            </div>
+            
+            <!-- 按钮 -->
+            <div style="padding: 0 35px 25px; text-align: center;">
+                <button onclick="confirmGameStart()" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: none; padding: 15px 50px; border-radius: 50px; font-size: 1.1rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(52,152,219,0.3); font-weight: 500;">
+                    确定入职
+                </button>
+            </div>
+            
+            <!-- 免责声明 -->
+            <div style="padding: 0 35px 20px; text-align: center; border-top: 1px solid #eee; padding-top: 15px;">
+                <p style="color: #999; font-size: 0.75rem; margin: 0; line-height: 1.5;">
+                    ⚠️ 本功能仅作科普教育之用，实际情况因各地条例而定。
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 设置弹窗 -->
+    <div id="settings-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1001; justify-content: center; align-items: center;">
+        <div class="settings-card" style="background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%); border-radius: 20px; max-width: 500px; width: 90%; max-height: 85vh; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; display: flex; flex-direction: column;">
+            <!-- 装饰顶部 -->
+            <div style="height: 8px; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
+            
+            <!-- 关闭按钮 -->
+            <button onclick="closeSettingsModal()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer; transition: color 0.3s; z-index: 10;">&times;</button>
+            
+            <!-- 标题 -->
+            <div style="text-align: center; padding: 30px 30px 20px; flex-shrink: 0;">
+                <div style="font-size: 3rem; margin-bottom: 10px;">⚙️</div>
+                <h2 style="color: #2c3e50; font-size: 1.5rem; margin: 0; font-weight: 600;">游戏设置</h2>
+            </div>
+            
+            <!-- 设置内容（可滚动） -->
+            <div style="padding: 0 35px 30px; overflow-y: auto; flex: 1;">
+                <!-- API Key -->
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; color: #2c3e50; font-size: 0.95rem; margin-bottom: 8px; font-weight: 500;">
+                        🔑 DeepSeek API Key
+                    </label>
+                    <input type="text" id="api-key" placeholder="输入你的 DeepSeek API Key" style="width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box; margin-bottom: 10px;">
+                    <button class="btn" onclick="saveApiKey()" style="width: 100%; padding: 10px; font-size: 0.9rem;">保存 API Key</button>
+                </div>
+                
+                <!-- AI Temperature -->
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; color: #2c3e50; font-size: 0.95rem; margin-bottom: 8px; font-weight: 500;">
+                        🌡️ AI 创造力 (Temperature)
+                    </label>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                        <span style="font-size: 0.85rem; color: #888;">保守</span>
+                        <input type="range" id="ai-temperature" min="0" max="100" value="30" style="flex: 1; cursor: pointer;" oninput="updateTempDisplay(this.value)">
+                        <span style="font-size: 0.85rem; color: #888;">创意</span>
+                    </div>
+                    <div style="text-align: center; color: #667eea; font-weight: 600; font-size: 1.1rem;">
+                        当前值: <span id="temp-value">0.3</span>
+                    </div>
+                    <p style="color: #999; font-size: 0.8rem; margin-top: 8px; margin-bottom: 0;">较低的值使AI回答更稳定，较高的值使AI更有创意</p>
+                </div>
+                
+                <!-- AI Max Tokens -->
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; color: #2c3e50; font-size: 0.95rem; margin-bottom: 8px; font-weight: 500;">
+                        📝 最大回复长度 (Max Tokens)
+                    </label>
+                    <select id="ai-max-tokens" style="width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;">
+                        <option value="500">简短 (500 tokens)</option>
+                        <option value="1000" selected>适中 (1000 tokens)</option>
+                        <option value="2000">详细 (2000 tokens)</option>
+                        <option value="4000">完整 (4000 tokens)</option>
+                    </select>
+                </div>
+                
+                <!-- 游戏速度 -->
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; color: #2c3e50; font-size: 0.95rem; margin-bottom: 8px; font-weight: 500;">
+                        ⏱️ 游戏速度
+                    </label>
+                    <select id="game-speed" onchange="changeGameSpeed()" style="width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;">
+                        <option value="0.5">慢速</option>
+                        <option value="1" selected>正常</option>
+                        <option value="2">快速</option>
+                    </select>
+                </div>
+                
+                <!-- 重置游戏 -->
+                <div style="border-top: 1px solid #eee; padding-top: 20px; margin-top: 25px;">
+                    <button class="btn btn-danger" onclick="resetGame()" style="width: 100%; padding: 12px; font-size: 0.95rem;">
+                        🔄 重置游戏
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 日记编辑器弹窗 -->
+    <div id="diary-editor-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1002; justify-content: center; align-items: center;">
+        <div class="diary-editor-card" style="background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%); border-radius: 20px; max-width: 500px; width: 90%; max-height: 85vh; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; overflow-y: auto;">
+            <!-- 装饰顶部 -->
+            <div style="height: 8px; background: linear-gradient(90deg, #3498db, #2980b9);"></div>
+            
+            <!-- 关闭按钮 -->
+            <button onclick="closeDiaryEditor()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.5rem; color: #2980b9; cursor: pointer; transition: color 0.3s;">&times;</button>
+            
+            <!-- 标题 -->
+            <div style="text-align: center; padding: 30px 30px 20px;">
+                <div style="font-size: 3rem; margin-bottom: 10px;">📔</div>
+                <h2 style="color: #2980b9; font-size: 1.5rem; margin: 0; font-weight: 600;">写日记</h2>
+            </div>
+            
+            <!-- 编辑内容 -->
+            <div style="padding: 0 35px 30px;">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; color: #2980b9; font-size: 0.95rem; margin-bottom: 8px; font-weight: 500;">
+                        📅 日期
+                    </label>
+                    <input type="text" id="diary-date" readonly style="width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box; background: #f5f5f5; color: #2c3e50;">
+                </div>
+                
+                <!-- 天气选择 -->
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; color: #2980b9; font-size: 0.95rem; margin-bottom: 8px; font-weight: 500;">
+                        🌤️ 天气
+                    </label>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <label class="weather-option" style="cursor: pointer; padding: 8px 12px; background: #f8f9fa; border-radius: 20px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="diary-weather" value="☀️ 晴" style="display: none;">
+                            <span>☀️ 晴</span>
+                        </label>
+                        <label class="weather-option" style="cursor: pointer; padding: 8px 12px; background: #f8f9fa; border-radius: 20px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="diary-weather" value="⛅ 多云" style="display: none;">
+                            <span>⛅ 多云</span>
+                        </label>
+                        <label class="weather-option" style="cursor: pointer; padding: 8px 12px; background: #f8f9fa; border-radius: 20px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="diary-weather" value="🌧️ 雨" style="display: none;">
+                            <span>🌧️ 雨</span>
+                        </label>
+                        <label class="weather-option" style="cursor: pointer; padding: 8px 12px; background: #f8f9fa; border-radius: 20px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="diary-weather" value="⛈️ 雷阵雨" style="display: none;">
+                            <span>⛈️ 雷阵雨</span>
+                        </label>
+                        <label class="weather-option" style="cursor: pointer; padding: 8px 12px; background: #f8f9fa; border-radius: 20px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="diary-weather" value="🌨️ 雪" style="display: none;">
+                            <span>🌨️ 雪</span>
+                        </label>
+                        <label class="weather-option" style="cursor: pointer; padding: 8px 12px; background: #f8f9fa; border-radius: 20px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="diary-weather" value="🌫️ 雾" style="display: none;">
+                            <span>🌫️ 雾</span>
+                        </label>
+                        <label class="weather-option" style="cursor: pointer; padding: 8px 12px; background: #f8f9fa; border-radius: 20px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="diary-weather" value="🌤️ 阴" style="display: none;">
+                            <span>🌤️ 阴</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- 心情选择 -->
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; color: #2980b9; font-size: 0.95rem; margin-bottom: 8px; font-weight: 500;">
+                        💭 心情
+                    </label>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <label class="mood-option" style="cursor: pointer; padding: 8px 12px; background: #f8f9fa; border-radius: 20px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="diary-mood" value="😊 开心" style="display: none;">
+                            <span>😊 开心</span>
+                        </label>
+                        <label class="mood-option" style="cursor: pointer; padding: 8px 12px; background: #f8f9fa; border-radius: 20px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="diary-mood" value="😌 平静" style="display: none;">
+                            <span>😌 平静</span>
+                        </label>
+                        <label class="mood-option" style="cursor: pointer; padding: 8px 12px; background: #f8f9fa; border-radius: 20px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="diary-mood" value="🤔 思考" style="display: none;">
+                            <span>🤔 思考</span>
+                        </label>
+                        <label class="mood-option" style="cursor: pointer; padding: 8px 12px; background: #f8f9fa; border-radius: 20px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="diary-mood" value="😢 伤感" style="display: none;">
+                            <span>😢 伤感</span>
+                        </label>
+                        <label class="mood-option" style="cursor: pointer; padding: 8px 12px; background: #f8f9fa; border-radius: 20px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="diary-mood" value="💪 充实" style="display: none;">
+                            <span>💪 充实</span>
+                        </label>
+                        <label class="mood-option" style="cursor: pointer; padding: 8px 12px; background: #f8f9fa; border-radius: 20px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="diary-mood" value="😰 疲惫" style="display: none;">
+                            <span>😰 疲惫</span>
+                        </label>
+                        <label class="mood-option" style="cursor: pointer; padding: 8px 12px; background: #f8f9fa; border-radius: 20px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="diary-mood" value="🙏 感恩" style="display: none;">
+                            <span>🙏 感恩</span>
+                        </label>
+                        <label class="mood-option" style="cursor: pointer; padding: 8px 12px; background: #f8f9fa; border-radius: 20px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="diary-mood" value="❤️ 感动" style="display: none;">
+                            <span>❤️ 感动</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; color: #2980b9; font-size: 0.95rem; margin-bottom: 8px; font-weight: 500;">
+                        📝 日记内容（100字左右）
+                    </label>
+                    <textarea id="diary-content" rows="6" placeholder="记录今天的工作感悟..." style="width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box; resize: vertical; font-family: inherit; line-height: 1.6; color: #2c3e50;"></textarea>
+                    <div style="text-align: right; color: #2980b9; font-size: 0.8rem; margin-top: 5px;">
+                        <span id="diary-char-count">0</span> / 150字
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" onclick="closeDiaryEditor()" style="flex: 1; padding: 12px; font-size: 0.95rem; background: #ecf0f1; color: #2980b9; border: none; border-radius: 8px; cursor: pointer;">
+                        取消
+                    </button>
+                    <button class="btn btn-primary" onclick="saveDiary()" style="flex: 1; padding: 12px; font-size: 0.95rem; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        保存日记
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 日记生成询问弹窗 -->
+    <div id="diary-generate-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1002; justify-content: center; align-items: center;">
+        <div class="diary-generate-card" style="background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%); border-radius: 20px; max-width: 450px; width: 90%; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden;">
+            <!-- 装饰顶部 -->
+            <div style="height: 8px; background: linear-gradient(90deg, #f39c12, #e67e22);"></div>
+            
+            <!-- 关闭按钮 -->
+            <button onclick="closeDiaryGenerateModal()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer; transition: color 0.3s;">&times;</button>
+            
+            <!-- 标题 -->
+            <div style="text-align: center; padding: 30px 30px 20px;">
+                <div style="font-size: 3rem; margin-bottom: 10px;">✨</div>
+                <h2 style="color: #2c3e50; font-size: 1.5rem; margin: 0; font-weight: 600;">记录感悟</h2>
+                <p style="color: #666; font-size: 1rem; margin-top: 10px;">你似有感触，要写下来吗？</p>
+            </div>
+            
+            <!-- 选项 -->
+            <div style="padding: 0 35px 30px;">
+                <p style="color: #555; font-size: 0.9rem; margin-bottom: 20px; text-align: center;">选择日记风格，AI将为你生成100字左右的日记</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                    <button onclick="generateDiaryWithStyle('formal')" style="padding: 15px; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1rem; transition: transform 0.2s;">
+                        📋 严谨总结
+                        <span style="display: block; font-size: 0.8rem; opacity: 0.9; margin-top: 5px;">客观记录事件要点和工作反思</span>
+                    </button>
+                    <button onclick="generateDiaryWithStyle('emotional')" style="padding: 15px; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1rem; transition: transform 0.2s;">
+                        💝 情感表达
+                        <span style="display: block; font-size: 0.8rem; opacity: 0.9; margin-top: 5px;">抒发内心感受和对生命的感悟</span>
+                    </button>
+                </div>
+                
+                <button onclick="closeDiaryGenerateModal()" style="width: 100%; padding: 12px; background: #ecf0f1; color: #555; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem;">
+                    暂时不写
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 加载动画遮罩 -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p id="loading-text">正在加载...</p>
+        </div>
+    </div>
+    
+    <!-- 作品大图查看模态框 -->
+    <div id="artwork-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; flex-direction: column;" onclick="closeArtworkModal()">
+        <div style="position: relative; max-width: 90%; max-height: 80%; display: flex; align-items: center; gap: 20px;" onclick="event.stopPropagation()">
+            <!-- 左箭头 -->
+            <button onclick="prevArtwork()" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 2.5rem; cursor: pointer; padding: 15px 10px; border-radius: 8px; transition: all 0.3s; hover: background: rgba(255,255,255,0.4);">◀</button>
+            
+            <div style="position: relative;">
+                <img id="modal-img" src="" alt="作品大图" style="max-width: 100%; max-height: 70vh; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+                <button onclick="closeArtworkModal()" style="position: absolute; top: -40px; right: 0; background: none; border: none; color: white; font-size: 2rem; cursor: pointer;">✕</button>
+            </div>
+            
+            <!-- 右箭头 -->
+            <button onclick="nextArtwork()" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 2.5rem; cursor: pointer; padding: 15px 10px; border-radius: 8px; transition: all 0.3s; hover: background: rgba(255,255,255,0.4);">▶</button>
+        </div>
+        <div style="margin-top: 20px; text-align: center; color: white;">
+            <h3 id="modal-title" style="font-size: 1.5rem; margin-bottom: 10px;"></h3>
+            <p id="modal-subtitle" style="font-size: 1rem; opacity: 0.8; margin-bottom: 15px;"></p>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <span id="modal-like-btn" onclick="toggleModalLike()" style="cursor: pointer; font-size: 2rem; opacity: 0.5; transition: all 0.3s ease;">❤️</span>
+                <span id="modal-like-count" style="font-size: 1.2rem; font-weight: 600; color: #e74c3c;"></span>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    
+    <script>
+        // 作品数据
+        const artworks = [
+            { src: 'images/anatomy-art-1.jpg', title: '作品一', subtitle: '2018年解剖绘画大赛' },
+            { src: 'images/anatomy-art-2.jpg', title: '作品二', subtitle: '2018年解剖绘画大赛' },
+            { src: 'images/anatomy-art-3.jpg', title: '作品三', subtitle: '2018年解剖绘画大赛' }
+        ];
+        
+        // 点赞数据存储（初始为0）
+        let artworkLikes = [0, 0, 0];
+        let likedArtworks = new Set();
+        let currentArtworkIndex = 0;
+        
+        // 打开作品大图模态框
+        function openArtworkModal(src, title, subtitle, index) {
+            currentArtworkIndex = index;
+            document.getElementById('modal-img').src = src;
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-subtitle').textContent = subtitle;
+            document.getElementById('modal-like-count').textContent = artworkLikes[index];
+            
+            // 更新点赞按钮状态
+            const likeBtn = document.getElementById('modal-like-btn');
+            if (likedArtworks.has(index)) {
+                likeBtn.style.opacity = '1';
+                likeBtn.style.transform = 'scale(1.2)';
+            } else {
+                likeBtn.style.opacity = '0.5';
+                likeBtn.style.transform = 'scale(1)';
+            }
+            
+            document.getElementById('artwork-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // 关闭作品大图模态框
+        function closeArtworkModal() {
+            document.getElementById('artwork-modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // 切换到上一张作品
+        function prevArtwork() {
+            currentArtworkIndex = (currentArtworkIndex - 1 + artworks.length) % artworks.length;
+            updateModalContent();
+        }
+        
+        // 切换到下一张作品
+        function nextArtwork() {
+            currentArtworkIndex = (currentArtworkIndex + 1) % artworks.length;
+            updateModalContent();
+        }
+        
+        // 更新模态框内容
+        function updateModalContent() {
+            const artwork = artworks[currentArtworkIndex];
+            document.getElementById('modal-img').src = artwork.src;
+            document.getElementById('modal-title').textContent = artwork.title;
+            document.getElementById('modal-subtitle').textContent = artwork.subtitle;
+            document.getElementById('modal-like-count').textContent = artworkLikes[currentArtworkIndex];
+            
+            // 更新点赞按钮状态
+            const likeBtn = document.getElementById('modal-like-btn');
+            if (likedArtworks.has(currentArtworkIndex)) {
+                likeBtn.style.opacity = '1';
+                likeBtn.style.transform = 'scale(1.2)';
+            } else {
+                likeBtn.style.opacity = '0.5';
+                likeBtn.style.transform = 'scale(1)';
+            }
+        }
+        
+        // 切换点赞状态（卡片上）
+        function toggleLike(index) {
+            const likeCount = document.getElementById(`like-count-${index}`);
+            const likeBtn = document.querySelectorAll('.like-btn')[index];
+            
+            if (likedArtworks.has(index)) {
+                artworkLikes[index]--;
+                likedArtworks.delete(index);
+                likeBtn.style.opacity = '0.5';
+                likeBtn.style.transform = 'scale(1)';
+            } else {
+                artworkLikes[index]++;
+                likedArtworks.add(index);
+                likeBtn.style.opacity = '1';
+                likeBtn.style.transform = 'scale(1.2)';
+                
+                // 添加动画效果
+                likeBtn.style.transition = 'transform 0.3s ease';
+                setTimeout(() => {
+                    likeBtn.style.transform = 'scale(1)';
+                }, 300);
+            }
+            
+            likeCount.textContent = artworkLikes[index];
+            
+            // 如果模态框打开，同步更新
+            if (document.getElementById('artwork-modal').style.display === 'flex' && currentArtworkIndex === index) {
+                document.getElementById('modal-like-count').textContent = artworkLikes[index];
+                const modalLikeBtn = document.getElementById('modal-like-btn');
+                if (likedArtworks.has(index)) {
+                    modalLikeBtn.style.opacity = '1';
+                    modalLikeBtn.style.transform = 'scale(1.2)';
+                } else {
+                    modalLikeBtn.style.opacity = '0.5';
+                    modalLikeBtn.style.transform = 'scale(1)';
+                }
+            }
+        }
+        
+        // 切换点赞状态（模态框中）
+        function toggleModalLike() {
+            toggleLike(currentArtworkIndex);
+        }
+        
+        // 初始化点赞按钮状态
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.like-btn').forEach((btn, index) => {
+                btn.style.opacity = '0.5';
+                btn.style.transition = 'all 0.3s ease';
+            });
+        });
+        
+        // ESC键关闭模态框
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeArtworkModal();
+            }
+        });
+        
+        // 三行祭文蜡烛点亮功能
+        let poemCandleCounts = [0, 0];
+        let litPoemCandles = new Set();
+        
+        function lightPoemCandle(index) {
+            const candleBtn = document.getElementById(`poem-candle-${index}`);
+            const candleCount = document.getElementById(`poem-candle-count-${index}`);
+            const poemCard = candleBtn.closest('.poem-example');
+            
+            if (litPoemCandles.has(index)) {
+                // 取消点亮
+                poemCandleCounts[index]--;
+                litPoemCandles.delete(index);
+                candleBtn.style.filter = 'grayscale(100%)';
+                candleBtn.style.transform = 'scale(1)';
+                candleBtn.style.textShadow = 'none';
+                poemCard.style.background = 'linear-gradient(135deg, #fefefe 0%, #f8f9fa 100%)';
+            } else {
+                // 点亮蜡烛
+                poemCandleCounts[index]++;
+                litPoemCandles.add(index);
+                candleBtn.style.filter = 'grayscale(0%)';
+                candleBtn.style.transform = 'scale(1.3)';
+                candleBtn.style.textShadow = '0 0 15px #e67e22, 0 0 30px #e67e22';
+                poemCard.style.background = 'linear-gradient(135deg, #fff9f0 0%, #fff5e6 100%)';
+                
+                // 添加发光动画
+                setTimeout(() => {
+                    candleBtn.style.transform = 'scale(1.1)';
+                }, 300);
+            }
+            
+            candleCount.textContent = poemCandleCounts[index];
+        }
+        
+        // 清明祭拜图片数组
+        const qingmingImages = [
+            './images/图片1.jpg',
+            './images/图片2.jpg',
+            './images/图片3.jpg',
+            './images/图片4.jpg'
+        ];
+        let currentImageIndex = 0;
+        
+        // 打开图片模态框
+        function openImageModal(index) {
+            currentImageIndex = index;
+            const modal = document.getElementById('image-modal');
+            const img = document.getElementById('modal-image');
+            img.src = qingmingImages[index];
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // 关闭图片模态框
+        function closeImageModal() {
+            const modal = document.getElementById('image-modal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // 显示上一张图片
+        function prevImage() {
+            currentImageIndex = (currentImageIndex - 1 + qingmingImages.length) % qingmingImages.length;
+            document.getElementById('modal-image').src = qingmingImages[currentImageIndex];
+        }
+        
+        // 显示下一张图片
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % qingmingImages.length;
+            document.getElementById('modal-image').src = qingmingImages[currentImageIndex];
+        }
+        
+        // 键盘事件监听
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('image-modal');
+            if (modal.style.display === 'flex') {
+                if (e.key === 'Escape') closeImageModal();
+                if (e.key === 'ArrowLeft') prevImage();
+                if (e.key === 'ArrowRight') nextImage();
+            }
+        });
+        
+        // 红十字会缅怀纪念活动图片数组
+        const hongshizihuiImages = [
+            './images/图片5.jpg',
+            './images/图片6.jpg'
+        ];
+        let currentHongshizihuiIndex = 0;
+        
+        // 打开红十字会图片模态框
+        function openHongshizihuiModal(index) {
+            currentHongshizihuiIndex = index;
+            const modal = document.getElementById('hongshizihui-modal');
+            const img = document.getElementById('hongshizihui-modal-image');
+            const counter = document.getElementById('hongshizihui-current-index');
+            img.src = hongshizihuiImages[index];
+            counter.textContent = index + 1;
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // 关闭红十字会图片模态框
+        function closeHongshizihuiModal() {
+            const modal = document.getElementById('hongshizihui-modal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // 红十字会图片上一张
+        function prevHongshizihuiImage() {
+            currentHongshizihuiIndex = (currentHongshizihuiIndex - 1 + hongshizihuiImages.length) % hongshizihuiImages.length;
+            document.getElementById('hongshizihui-modal-image').src = hongshizihuiImages[currentHongshizihuiIndex];
+            document.getElementById('hongshizihui-current-index').textContent = currentHongshizihuiIndex + 1;
+        }
+        
+        // 红十字会图片下一张
+        function nextHongshizihuiImage() {
+            currentHongshizihuiIndex = (currentHongshizihuiIndex + 1) % hongshizihuiImages.length;
+            document.getElementById('hongshizihui-modal-image').src = hongshizihuiImages[currentHongshizihuiIndex];
+            document.getElementById('hongshizihui-current-index').textContent = currentHongshizihuiIndex + 1;
+        }
+        
+        // 红十字会模态框键盘事件
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('hongshizihui-modal');
+            if (modal && modal.style.display === 'flex') {
+                if (e.key === 'Escape') closeHongshizihuiModal();
+                if (e.key === 'ArrowLeft') prevHongshizihuiImage();
+                if (e.key === 'ArrowRight') nextHongshizihuiImage();
+            }
+        });
+        
+        // 三献社会实践团图片数组
+        const shijianImages = [
+            './images/图片7.jpg',
+            './images/图片8.jpg',
+            './images/图片9.jpg',
+            './images/图片10.jpg',
+            './images/图片11.jpg'
+        ];
+        const shijianCaptions = [
+            '团队成员聆听器官捐献者分享',
+            '团队成员参观纪念园缅怀大体老师',
+            '社区"三献"宣讲',
+            '前往相关单位学习"三献"知识',
+            '"三献"活动街头推广'
+        ];
+        let currentShijianIndex = 0;
+        
+        // 打开三献社会实践团图片模态框
+        function openShijianModal(index) {
+            currentShijianIndex = index;
+            const modal = document.getElementById('shijian-modal');
+            const img = document.getElementById('shijian-modal-image');
+            const caption = document.getElementById('shijian-modal-caption');
+            const counter = document.getElementById('shijian-current-index');
+            img.src = shijianImages[index];
+            caption.textContent = shijianCaptions[index];
+            counter.textContent = index + 1;
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // 关闭三献社会实践团图片模态框
+        function closeShijianModal() {
+            const modal = document.getElementById('shijian-modal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // 打开志愿者登记表模态框
+        function openVolunteerModal() {
+            const modal = document.getElementById('volunteer-modal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭志愿者登记表模态框
+        function closeVolunteerModal() {
+            const modal = document.getElementById('volunteer-modal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // 点击模态框背景关闭
+        document.getElementById('volunteer-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeVolunteerModal();
+            }
+        });
+
+        // 志愿者详情数据
+        const volunteerDetails = {
+            redcross: {
+                icon: '🏥',
+                title: '红十字会志愿者',
+                description: '参与红十字会组织的各类公益活动，包括应急救援、人道救助、健康宣传等志愿服务。',
+                benefits: [
+                    '接受专业急救培训，掌握基本救护技能',
+                    '参与社区健康服务，帮助有需要的人群',
+                    '获得志愿服务证书，记录服务时长',
+                    '结识志同道合的朋友，共同成长'
+                ],
+                requirements: [
+                    '年满18周岁，身体健康',
+                    '热心公益事业，有奉献精神',
+                    '遵守红十字会章程和相关规定'
+                ],
+                color: '#ff6b6b'
+            },
+            body: {
+                icon: '🎓',
+                title: '遗体捐献志愿者',
+                description: '捐献遗体用于医学教育和科学研究，为培养医学人才、推动医学进步做出贡献。',
+                benefits: [
+                    '成为医学生的"大体老师"，培养未来医生',
+                    '推动医学教育发展，促进医学进步',
+                    '名字镌刻于纪念园，永受后人敬仰',
+                    '生命以另一种方式延续，意义非凡'
+                ],
+                requirements: [
+                    '具有完全民事行为能力',
+                    '自愿捐献，家人理解支持',
+                    '无传染性疾病（部分限制）'
+                ],
+                color: '#4ecdc4'
+            },
+            organ: {
+                icon: '❤️',
+                title: '器官捐献志愿者',
+                description: '捐献器官挽救他人生命，让生命以另一种方式延续，传递人间大爱。',
+                benefits: [
+                    '挽救器官衰竭患者生命，给予新生希望',
+                    '帮助失明者重见光明，重获色彩世界',
+                    '生命以另一种方式延续，大爱永存',
+                    '为医学研究提供宝贵资料'
+                ],
+                requirements: [
+                    '年满18周岁，具有完全民事行为能力',
+                    '自愿无偿捐献，家人同意',
+                    '身体健康状况符合捐献条件'
+                ],
+                color: '#45b7d1'
+            },
+            science: {
+                icon: '📢',
+                title: '科普志愿者',
+                description: '参与遗体捐献科普宣传工作，通过线上线下活动向公众普及遗体捐献知识，消除误解，传递科学理念。',
+                benefits: [
+                    '接受专业科普培训，提升沟通表达能力',
+                    '参与各类科普活动，积累志愿服务经验',
+                    '获得志愿服务证书和社会实践证明',
+                    '为公益事业贡献力量，实现个人价值'
+                ],
+                requirements: [
+                    '热心科普事业，具有良好的沟通能力',
+                    '愿意学习遗体捐献相关知识',
+                    '能够定期参与科普宣传活动'
+                ],
+                color: '#f39c12'
+            }
+        };
+
+        // 打开志愿者详情弹窗
+        function openVolunteerDetailModal(type) {
+            const modal = document.getElementById('volunteer-detail-modal');
+            const content = document.getElementById('volunteer-detail-content');
+            const data = volunteerDetails[type];
+            
+            content.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 4rem; margin-bottom: 10px;">${data.icon}</div>
+                    <h3 style="color: #2c3e50; font-size: 1.5rem; margin-bottom: 10px;">${data.title}</h3>
+                    <p style="color: #666; font-size: 0.95rem; line-height: 1.6;">${data.description}</p>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: ${data.color}; font-size: 1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        <span>✨</span> 志愿权益
+                    </h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        ${data.benefits.map(b => `
+                            <li style="padding: 6px 0; padding-left: 20px; position: relative; color: #555; font-size: 0.9rem; line-height: 1.5;">
+                                <span style="position: absolute; left: 0; color: ${data.color};">✓</span>
+                                ${b}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 style="color: ${data.color}; font-size: 1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        <span>📋</span> 基本条件
+                    </h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        ${data.requirements.map(r => `
+                            <li style="padding: 6px 0; padding-left: 20px; position: relative; color: #555; font-size: 0.9rem; line-height: 1.5;">
+                                <span style="position: absolute; left: 0; color: ${data.color};">•</span>
+                                ${r}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭志愿者详情弹窗
+        function closeVolunteerDetailModal() {
+            const modal = document.getElementById('volunteer-detail-modal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // 点击详情模态框背景关闭
+        document.getElementById('volunteer-detail-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeVolunteerDetailModal();
+            }
+        });
+        
+        // 三献社会实践团图片上一张
+        function prevShijianImage() {
+            currentShijianIndex = (currentShijianIndex - 1 + shijianImages.length) % shijianImages.length;
+            document.getElementById('shijian-modal-image').src = shijianImages[currentShijianIndex];
+            document.getElementById('shijian-modal-caption').textContent = shijianCaptions[currentShijianIndex];
+            document.getElementById('shijian-current-index').textContent = currentShijianIndex + 1;
+        }
+        
+        // 三献社会实践团图片下一张
+        function nextShijianImage() {
+            currentShijianIndex = (currentShijianIndex + 1) % shijianImages.length;
+            document.getElementById('shijian-modal-image').src = shijianImages[currentShijianIndex];
+            document.getElementById('shijian-modal-caption').textContent = shijianCaptions[currentShijianIndex];
+            document.getElementById('shijian-current-index').textContent = currentShijianIndex + 1;
+        }
+        
+        // 三献社会实践团模态框键盘事件
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('shijian-modal');
+            if (modal && modal.style.display === 'flex') {
+                if (e.key === 'Escape') closeShijianModal();
+                if (e.key === 'ArrowLeft') prevShijianImage();
+                if (e.key === 'ArrowRight') nextShijianImage();
+            }
+        });
+    </script>
+    
+    <!-- 图片查看模态框 -->
+    <div id="image-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center;">
+        <!-- 关闭按钮 -->
+        <button onclick="closeImageModal()" style="position: absolute; top: 20px; right: 30px; background: none; border: none; color: white; font-size: 2.5rem; cursor: pointer; z-index: 10001; transition: all 0.3s ease;">&times;</button>
+        
+        <!-- 左箭头 -->
+        <button onclick="prevImage()" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 10001; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;">&#10094;</button>
+        
+        <!-- 右箭头 -->
+        <button onclick="nextImage()" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 10001; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;">&#10095;</button>
+        
+        <!-- 图片 -->
+        <img id="modal-image" src="" alt="清明祭拜活动" style="max-width: 90%; max-height: 85%; object-fit: contain; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+        
+        <!-- 图片计数器 -->
+        <div id="image-counter" style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); color: white; font-size: 1rem; background: rgba(0,0,0,0.5); padding: 8px 20px; border-radius: 20px;">
+            <span id="current-index">1</span> / <span id="total-count">4</span>
+        </div>
+    </div>
+    
+    <!-- 红十字会缅怀纪念活动图片查看模态框 -->
+    <div id="hongshizihui-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(183, 28, 28, 0.95); z-index: 10000; justify-content: center; align-items: center;">
+        <!-- 关闭按钮 -->
+        <button onclick="closeHongshizihuiModal()" style="position: absolute; top: 20px; right: 30px; background: none; border: none; color: white; font-size: 2.5rem; cursor: pointer; z-index: 10001; transition: all 0.3s ease;">&times;</button>
+        
+        <!-- 左箭头 -->
+        <button onclick="prevHongshizihuiImage()" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 10001; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;">&#10094;</button>
+        
+        <!-- 右箭头 -->
+        <button onclick="nextHongshizihuiImage()" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 10001; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;">&#10095;</button>
+        
+        <!-- 图片 -->
+        <img id="hongshizihui-modal-image" src="" alt="红十字会缅怀纪念活动" style="max-width: 85%; max-height: 80%; object-fit: contain; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 3px solid rgba(255,255,255,0.3);">
+        
+        <!-- 图片计数器 -->
+        <div style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); color: white; font-size: 1rem; background: rgba(0,0,0,0.5); padding: 8px 20px; border-radius: 20px;">
+            <span id="hongshizihui-current-index">1</span> / <span id="hongshizihui-total-count">2</span>
+        </div>
+    </div>
+    
+    <!-- 三献社会实践团图片查看模态框 -->
+    <div id="shijian-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(46, 125, 50, 0.95); z-index: 10000; justify-content: center; align-items: center;">
+        <!-- 关闭按钮 -->
+        <button onclick="closeShijianModal()" style="position: absolute; top: 20px; right: 30px; background: none; border: none; color: white; font-size: 2.5rem; cursor: pointer; z-index: 10001; transition: all 0.3s ease;">&times;</button>
+        
+        <!-- 左箭头 -->
+        <button onclick="prevShijianImage()" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 10001; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;">&#10094;</button>
+        
+        <!-- 右箭头 -->
+        <button onclick="nextShijianImage()" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; font-size: 2rem; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 10001; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;">&#10095;</button>
+        
+        <!-- 图片 -->
+        <div style="display: flex; flex-direction: column; align-items: center; max-width: 85%; max-height: 85%;">
+            <img id="shijian-modal-image" src="" alt="三献社会实践团" style="max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 3px solid rgba(255,255,255,0.3);">
+            <!-- 图片描述 -->
+            <div id="shijian-modal-caption" style="margin-top: 20px; color: white; font-size: 1.2rem; text-align: center; background: rgba(0,0,0,0.4); padding: 10px 25px; border-radius: 25px;"></div>
+        </div>
+        
+        <!-- 图片计数器 -->
+        <div style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); color: white; font-size: 1rem; background: rgba(0,0,0,0.5); padding: 8px 20px; border-radius: 20px;">
+            <span id="shijian-current-index">1</span> / <span id="shijian-total-count">5</span>
+        </div>
+    </div>
+
+    <!-- 志愿者登记表模态框 -->
+    <div id="volunteer-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000; justify-content: center; align-items: center;">
+        <div style="background: white; border-radius: 16px; padding: 30px; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+            <!-- 关闭按钮 -->
+            <button onclick="closeVolunteerModal()" style="position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: #999; transition: color 0.3s;">&times;</button>
+            
+            <h3 style="text-align: center; color: #2c3e50; margin-bottom: 8px; font-size: 1.4rem;">📝 志愿者意向登记表</h3>
+            <p style="text-align: center; color: #888; font-size: 0.9rem; margin-bottom: 25px;">请填写以下信息，我们将尽快与您联系</p>
+            
+            <form onsubmit="return false;" style="display: flex; flex-direction: column; gap: 15px;">
+                <div style="display: flex; gap: 15px;">
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+                        <label style="color: #555; font-size: 0.9rem; font-weight: 500;">姓名</label>
+                        <input type="text" placeholder="请输入您的姓名" disabled style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; background: #f5f5f5;">
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+                        <label style="color: #555; font-size: 0.9rem; font-weight: 500;">性别</label>
+                        <select disabled style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; background: #f5f5f5;">
+                            <option value="">请选择</option>
+                            <option value="male">男</option>
+                            <option value="female">女</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 15px;">
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+                        <label style="color: #555; font-size: 0.9rem; font-weight: 500;">联系电话</label>
+                        <input type="tel" placeholder="请输入联系电话" disabled style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; background: #f5f5f5;">
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+                        <label style="color: #555; font-size: 0.9rem; font-weight: 500;">电子邮箱</label>
+                        <input type="email" placeholder="请输入电子邮箱" disabled style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; background: #f5f5f5;">
+                    </div>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <label style="color: #555; font-size: 0.9rem; font-weight: 500;">意向志愿者类型（可多选）</label>
+                    <div style="display: flex; flex-direction: column; gap: 10px; padding: 12px; background: #f9f9f9; border-radius: 8px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #555; font-size: 0.95rem;">
+                            <input type="checkbox" disabled style="width: 18px; height: 18px;">
+                            <span>🏥 红十字会志愿者</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #555; font-size: 0.95rem;">
+                            <input type="checkbox" disabled style="width: 18px; height: 18px;">
+                            <span>🎓 遗体捐献志愿者</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #555; font-size: 0.95rem;">
+                            <input type="checkbox" disabled style="width: 18px; height: 18px;">
+                            <span>❤️ 器官捐献志愿者</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="color: #555; font-size: 0.9rem; font-weight: 500;">个人简介 / 加入动机</label>
+                    <textarea rows="3" placeholder="请简要介绍您自己以及加入志愿者的原因..." disabled style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; background: #f5f5f5; resize: vertical;"></textarea>
+                </div>
+                
+                <button type="submit" disabled style="background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%); color: white; border: none; padding: 14px 24px; border-radius: 10px; font-size: 1rem; cursor: not-allowed; opacity: 0.6; margin-top: 10px; font-weight: 600;">提交申请（预留）</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 志愿者详情弹窗 -->
+    <div id="volunteer-detail-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000; justify-content: center; align-items: center;">
+        <div style="background: white; border-radius: 16px; padding: 30px; max-width: 450px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+            <button onclick="closeVolunteerDetailModal()" style="position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: #999;">&times;</button>
+            
+            <div id="volunteer-detail-content">
+                <!-- 动态内容 -->
+            </div>
+            
+            <button onclick="closeVolunteerDetailModal(); openVolunteerModal();" style="background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-size: 1rem; cursor: pointer; width: 100%; margin-top: 20px; font-weight: 600;">我要报名</button>
+        </div>
+    </div>
+</body>
+</html>
