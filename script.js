@@ -535,6 +535,7 @@ function initPageFunctions() {
     initUpload();
     updateStoriesList();
     updateMyStoriesList();
+    initFamilySettingsUI();
     
     // 检查登录状态
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -556,6 +557,11 @@ window.startGame = startGame;
 window.saveApiKey = saveApiKey;
 window.changeGameSpeed = changeGameSpeed;
 window.resetGame = resetGame;
+window.setFamilyApiMode = setFamilyApiMode;
+window.saveFamilyCustomApiKey = saveFamilyCustomApiKey;
+window.getFamilyApiKey = getFamilyApiKey;
+window.getFamilyApiMode = getFamilyApiMode;
+window.initFamilySettingsUI = initFamilySettingsUI;
 
 // 页面加载完成后初始化
 window.addEventListener('DOMContentLoaded', () => {
@@ -1993,7 +1999,7 @@ ${styleGuidance}
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
+                'Authorization': `Bearer ${gameState.apiKey}`
             },
             body: JSON.stringify({
                 model: 'deepseek-chat',
@@ -4627,10 +4633,18 @@ async function generateLetter() {
         document.getElementById('loadingIndicator').style.display = 'block';
         document.getElementById('letterResult').style.display = 'none';
         
-        // 获取API密钥
-        const apiKey = localStorage.getItem('deepseekApiKey');
+        // 获取API密钥（根据用户选择的模式）
+        const apiKey = getFamilyApiKey();
         if (!apiKey) {
-            alert('请先在游戏页面设置DeepSeek API Key！');
+            alert('请先在登录时设置您的 API Key，或选择使用云端 API！');
+            document.getElementById('loadingIndicator').style.display = 'none';
+            return;
+        }
+        
+        // 检查 API 模式
+        const apiMode = getFamilyApiMode();
+        if (apiMode === 'custom' && !localStorage.getItem('familyCustomApiKey')) {
+            alert('请先在家属板块设置您的自定义 API Key！');
             document.getElementById('loadingIndicator').style.display = 'none';
             return;
         }
@@ -4800,11 +4814,19 @@ async function sendChatMessage() {
     showTypingIndicator();
     
     try {
-        // 获取API密钥
-        const apiKey = localStorage.getItem('deepseekApiKey');
+        // 获取API密钥（根据用户选择的模式）
+        const apiKey = getFamilyApiKey();
         if (!apiKey) {
             hideTypingIndicator();
-            addChatMessage('请先在游戏页面设置DeepSeek API Key，以便我为您提供服务。', 'system');
+            addChatMessage('请先在登录时设置您的 API Key，或选择使用云端 API，以便我为您提供服务。', 'system');
+            return;
+        }
+        
+        // 检查 API 模式
+        const apiMode = getFamilyApiMode();
+        if (apiMode === 'custom' && !localStorage.getItem('familyCustomApiKey')) {
+            hideTypingIndicator();
+            addChatMessage('请先在家属板块设置您的自定义 API Key，以便我为您提供服务。', 'system');
             return;
         }
         
@@ -5656,12 +5678,109 @@ function login(username, password) {
     if (user) {
         currentUser = { username: user.username };
         localStorage.setItem('donationSimulatorUser', JSON.stringify(currentUser));
+        
+        // 保存 API 模式选择
+        const apiMode = document.querySelector('input[name="family-api-mode"]:checked')?.value || 'default';
+        localStorage.setItem('familyApiMode', apiMode);
+        
+        // 如果选择自定义 API，检查是否已设置
+        if (apiMode === 'custom') {
+            const savedApiKey = localStorage.getItem('familyCustomApiKey');
+            if (!savedApiKey) {
+                // 提示用户需要设置 API Key
+                alert('您选择了使用自己的 API Key，请在家属板块设置中配置您的 API Key');
+            }
+        }
+        
         updateAuthUI();
         closeAuthModal();
         return { success: true };
     }
     
     return { success: false, message: '用户名或密码错误' };
+}
+
+// 家属板块 API 密钥管理
+function getFamilyApiKey() {
+    const apiMode = localStorage.getItem('familyApiMode') || 'default';
+    if (apiMode === 'custom') {
+        return localStorage.getItem('familyCustomApiKey') || '';
+    }
+    // 默认使用云端 API
+    return 'sk-b91fb54c524b40bf8ad6e8063f204dc5';
+}
+
+function getFamilyApiMode() {
+    return localStorage.getItem('familyApiMode') || 'default';
+}
+
+function setFamilyCustomApiKey(key) {
+    localStorage.setItem('familyCustomApiKey', key);
+}
+
+function clearFamilyCustomApiKey() {
+    localStorage.removeItem('familyCustomApiKey');
+}
+
+// 家属板块设置 API 模式
+function setFamilyApiMode(mode) {
+    localStorage.setItem('familyApiMode', mode);
+    
+    // 更新按钮样式
+    const defaultBtn = document.getElementById('familyApiDefaultBtn');
+    const customBtn = document.getElementById('familyApiCustomBtn');
+    const customSection = document.getElementById('familyCustomApiSection');
+    const modeDisplay = document.getElementById('familyApiModeDisplay');
+    
+    if (mode === 'default') {
+        if (defaultBtn) {
+            defaultBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            defaultBtn.style.color = 'white';
+        }
+        if (customBtn) {
+            customBtn.style.background = '#e0e0e0';
+            customBtn.style.color = '#333';
+        }
+        if (customSection) customSection.style.display = 'none';
+        if (modeDisplay) modeDisplay.textContent = '☁️ 云端 API';
+    } else {
+        if (defaultBtn) {
+            defaultBtn.style.background = '#e0e0e0';
+            defaultBtn.style.color = '#333';
+        }
+        if (customBtn) {
+            customBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            customBtn.style.color = 'white';
+        }
+        if (customSection) customSection.style.display = 'block';
+        if (modeDisplay) modeDisplay.textContent = '🔑 自定义 API';
+    }
+}
+
+function saveFamilyCustomApiKey() {
+    const apiKeyInput = document.getElementById('familyCustomApiKey');
+    const apiKey = apiKeyInput?.value.trim();
+    
+    if (!apiKey) {
+        alert('请输入 API Key！');
+        return;
+    }
+    
+    setFamilyCustomApiKey(apiKey);
+    if (apiKeyInput) apiKeyInput.value = '';
+    alert('✅ API Key 已保存！');
+}
+
+// 初始化家属板块设置界面
+function initFamilySettingsUI() {
+    const mode = getFamilyApiMode();
+    setFamilyApiMode(mode);
+    
+    // 加载已保存的 API Key（不显示，只用于检查）
+    const savedKey = localStorage.getItem('familyCustomApiKey');
+    if (savedKey) {
+        console.log('已保存自定义 API Key');
+    }
 }
 
 // 用户注册
@@ -5755,20 +5874,8 @@ function closeFamilyGreetingModal() {
 
 // AI生成家属问候内容
 async function generateFamilyGreeting(storyCount) {
-    // 尝试从加密存储获取 API 密钥
-    let apiKey = gameState.apiKey;
-    
-    // 如果没有 API 密钥，尝试从加密存储加载
-    if (!apiKey) {
-        try {
-            apiKey = await APIKeyAccess.getApiKey();
-        } catch (e) {
-            console.error('加载 API 密钥失败:', e);
-        }
-    }
-    
-    // 如果仍然没有 API 配置，使用默认内容
-    if (!apiKey) {
+    // 如果没有API配置，使用默认内容
+    if (!gameState.apiKey) {
         const userName = currentUser ? currentUser.username : '朋友';
         return `
             <p>亲爱的 <strong>${userName}</strong>，您好！🙏</p>
@@ -5786,7 +5893,7 @@ async function generateFamilyGreeting(storyCount) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000);
         
-        const response = await fetch(API_ENDPOINT, {
+        const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

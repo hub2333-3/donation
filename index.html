@@ -345,6 +345,31 @@
                         </form>
                     </div>
                     
+                    <!-- 家属板块设置 -->
+                    <div class="family-settings-section" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 20px; border-radius: 15px; margin-bottom: 30px;">
+                        <h3 style="margin-bottom: 15px;">⚙️ AI 服务设置</h3>
+                        <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">选择您偏好的 AI 服务方式来生成信件和情感陪伴。</p>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="btn" id="familyApiDefaultBtn" onclick="setFamilyApiMode('default')" style="padding: 10px 20px; flex: 1; min-width: 140px;">☁️ 云端 API</button>
+                                <button class="btn" id="familyApiCustomBtn" onclick="setFamilyApiMode('custom')" style="padding: 10px 20px; flex: 1; min-width: 140px; background: #e0e0e0; color: #333;">🔑 自定义 API</button>
+                            </div>
+                            
+                            <div id="familyCustomApiSection" style="display: none;">
+                                <div style="background: white; padding: 15px; border-radius: 10px;">
+                                    <label style="display: block; margin-bottom: 8px; color: #333; font-weight: 500;">自定义 API Key</label>
+                                    <input type="text" id="familyCustomApiKey" placeholder="输入您的 DeepSeek API Key" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 0.9rem; margin-bottom: 10px;">
+                                    <button class="btn btn-primary" onclick="saveFamilyCustomApiKey()" style="padding: 10px 20px; font-size: 0.9rem;">保存 API Key</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p style="color: #888; font-size: 0.8rem; margin-top: 15px;">
+                            💡 当前模式：<span id="familyApiModeDisplay">☁️ 云端 API</span>
+                        </p>
+                    </div>
+                    
                     <div class="my-stories-section">
                         <h3>📖 我的故事</h3>
                         <p>这里展示了您上传的所有故事，您可以对它们进行修改或删除。</p>
@@ -1040,6 +1065,30 @@
             
             <div id="login-form-section">
                 <h2 style="text-align: center; color: #667eea; margin-bottom: 30px;">🔐 用户登录</h2>
+                
+                <!-- AI 服务选择 -->
+                <div style="margin-bottom: 25px; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px;">
+                    <label style="display: block; color: #2c3e50; font-size: 0.95rem; margin-bottom: 12px; font-weight: 500;">
+                        <span style="margin-right: 8px;">🤖</span>AI 服务选择
+                    </label>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <label style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #e8f4f8; border-radius: 8px; cursor: pointer; border: 2px solid #3498db;">
+                            <input type="radio" name="family-api-mode" value="default" checked style="cursor: pointer;">
+                            <div style="flex: 1;">
+                                <span style="color: #2c3e50; font-size: 0.9rem; font-weight: 500;">☁️ 调用云端 API</span>
+                                <p style="color: #666; font-size: 0.75rem; margin: 2px 0 0 0;">使用内置 AI 服务（推荐）</p>
+                            </div>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #f8f9fa; border-radius: 8px; cursor: pointer; border: 2px solid transparent;">
+                            <input type="radio" name="family-api-mode" value="custom" style="cursor: pointer;">
+                            <div style="flex: 1;">
+                                <span style="color: #2c3e50; font-size: 0.9rem; font-weight: 500;">🔑 调用自己的 API</span>
+                                <p style="color: #666; font-size: 0.75rem; margin: 2px 0 0 0;">使用您自己的 API Key</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
                 <form id="modal-login-form">
                     <div class="form-group" style="margin-bottom: 20px;">
                         <label for="modal-login-username" style="display: block; margin-bottom: 8px; color: #333;">用户名</label>
