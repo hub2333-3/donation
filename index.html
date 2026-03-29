@@ -187,7 +187,7 @@
                                 <h4 id="event-title">欢迎加入</h4>
                                 <p id="event-description">作为遗体捐献全程负责人，你的职责是协调各方资源，确保捐献过程顺利进行。请做好准备，开始你的工作。</p>
                                 <div class="event-options" id="event-options">
-                                    <button class="btn event-option" onclick="startGame()">开始游戏</button>
+                                    <button class="btn event-option" id="startGameBtn" onclick="startGame()">开始游戏</button>
                                 </div>
                             </div>
                         </div>
@@ -309,65 +309,61 @@
                         <p>生命虽已远去，但爱与回忆将永远长存。在这里，您可以记录与分享逝者的故事，让爱延续。</p>
                     </div>
                     
-                    <!-- 用户信息显示（登录后显示） -->
-                    <div id="family-user-info" class="user-info-section" style="display: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; margin-bottom: 30px; color: white;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h3 style="margin-bottom: 10px;">👤 <span id="family-user-name"></span></h3>
-                                <p style="opacity: 0.9; font-size: 0.9rem;">已上传 <span id="family-story-count">0</span> 个故事</p>
-                            </div>
-                            <button class="btn" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid white;" onclick="logout()">退出登录</button>
-                        </div>
-                    </div>
-                    
-                    <div class="upload-section">
-                        <h3>📝 分享回忆</h3>
-                        <p>在这里，您可以上传逝者的照片、文字等内容，记录那些珍贵的回忆。</p>
-                        
-                        <form id="uploadForm">
-                            <div class="form-group">
-                                <label for="uploadTitle">标题</label>
-                                <input type="text" id="uploadTitle" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="uploadContent">内容</label>
-                                <textarea id="uploadContent" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="uploadImage">上传图片</label>
-                                <input type="file" id="uploadImage" accept="image/*">
-                            </div>
-                            <div class="privacy-option">
-                                <label><input type="radio" name="privacy" value="public" checked> 公开（将在纪念页面显示）</label>
-                                <label><input type="radio" name="privacy" value="private"> 不公开</label>
-                            </div>
-                            <button type="submit" class="btn btn-primary">上传</button>
-                        </form>
-                    </div>
-                    
-                    <!-- 家属板块设置 -->
-                    <div class="family-settings-section" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 20px; border-radius: 15px; margin-bottom: 30px;">
-                        <h3 style="margin-bottom: 15px;">⚙️ AI 服务设置</h3>
-                        <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">选择您偏好的 AI 服务方式来生成信件和情感陪伴。</p>
-                        
-                        <div style="display: flex; flex-direction: column; gap: 15px;">
-                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <button class="btn" id="familyApiDefaultBtn" onclick="setFamilyApiMode('default')" style="padding: 10px 20px; flex: 1; min-width: 140px;">☁️ 云端 API</button>
-                                <button class="btn" id="familyApiCustomBtn" onclick="setFamilyApiMode('custom')" style="padding: 10px 20px; flex: 1; min-width: 140px; background: #e0e0e0; color: #333;">🔑 自定义 API</button>
-                            </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                        <div class="upload-section">
+                            <h3>📝 分享回忆</h3>
+                            <p>在这里，您可以上传逝者的照片、文字等内容，记录那些珍贵的回忆。</p>
                             
-                            <div id="familyCustomApiSection" style="display: none;">
-                                <div style="background: white; padding: 15px; border-radius: 10px;">
-                                    <label style="display: block; margin-bottom: 8px; color: #333; font-weight: 500;">自定义 API Key</label>
-                                    <input type="text" id="familyCustomApiKey" placeholder="输入您的 DeepSeek API Key" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 0.9rem; margin-bottom: 10px;">
-                                    <button class="btn btn-primary" onclick="saveFamilyCustomApiKey()" style="padding: 10px 20px; font-size: 0.9rem;">保存 API Key</button>
+                            <form id="uploadForm">
+                                <div class="form-group">
+                                    <label for="uploadTitle">标题</label>
+                                    <input type="text" id="uploadTitle" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="uploadContent">内容</label>
+                                    <textarea id="uploadContent" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="uploadImage">上传图片</label>
+                                    <input type="file" id="uploadImage" accept="image/*">
+                                </div>
+                                <div class="privacy-option">
+                                    <label><input type="radio" name="privacy" value="public" checked> 公开（将在纪念页面显示）</label>
+                                    <label><input type="radio" name="privacy" value="private"> 不公开</label>
+                                </div>
+                                <button type="submit" class="btn btn-primary">上传</button>
+                            </form>
+                        </div>
+                        
+                        <div class="letter-generation-section">
+                            <h3>💌 个性化信件生成</h3>
+                            <p>输入捐献者生前的话语、性格和外貌特征，我们将为您生成一封来自捐献者的个性化信件。</p>
+                            <div class="letter-form">
+                                <div class="form-group">
+                                    <label for="donorWords">生前话语</label>
+                                    <textarea id="donorWords" placeholder="请输入捐献者生前常说的话、口头禅或重要的话语..." rows="4"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="donorPersonality">性格特征</label>
+                                    <textarea id="donorPersonality" placeholder="请描述捐献者的性格特点，如开朗、善良、幽默等..." rows="4"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="donorAppearance">外貌特征</label>
+                                    <textarea id="donorAppearance" placeholder="请描述捐献者的外貌特征，如体型、发型、面部特征等..." rows="4"></textarea>
+                                </div>
+                                <button class="btn btn-primary" onclick="generateLetter()">生成信件</button>
+                                <div class="loading-indicator" id="loadingIndicator" style="display: none;">
+                                    <p>信件生成中，请稍候...</p>
                                 </div>
                             </div>
+                            <div class="letter-result" id="letterResult" style="display: none;">
+                                <h4>生成的信件</h4>
+                                <div class="letter-content" id="letterContent">
+                                    <!-- 生成的信件内容将在这里显示 -->
+                                </div>
+                                <button class="btn btn-secondary" onclick="downloadLetter()">下载信件</button>
+                            </div>
                         </div>
-                        
-                        <p style="color: #888; font-size: 0.8rem; margin-top: 15px;">
-                            💡 当前模式：<span id="familyApiModeDisplay">☁️ 云端 API</span>
-                        </p>
                     </div>
                     
                     <div class="my-stories-section">
@@ -375,36 +371,6 @@
                         <p>这里展示了您上传的所有故事，您可以对它们进行修改或删除。</p>
                         <div class="my-stories-list" id="myStoriesList">
                             <!-- 故事将通过JavaScript动态添加 -->
-                        </div>
-                    </div>
-                    
-                    <div class="letter-generation-section">
-                        <h3>个性化信件生成</h3>
-                        <p>输入捐献者生前的话语、性格和外貌特征，我们将为您生成一封来自捐献者的个性化信件。</p>
-                        <div class="letter-form">
-                            <div class="form-group">
-                                <label for="donorWords">生前话语</label>
-                                <textarea id="donorWords" placeholder="请输入捐献者生前常说的话、口头禅或重要的话语..." rows="4"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="donorPersonality">性格特征</label>
-                                <textarea id="donorPersonality" placeholder="请描述捐献者的性格特点，如开朗、善良、幽默等..." rows="4"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="donorAppearance">外貌特征</label>
-                                <textarea id="donorAppearance" placeholder="请描述捐献者的外貌特征，如体型、发型、面部特征等..." rows="4"></textarea>
-                            </div>
-                            <button class="btn btn-primary" onclick="generateLetter()">生成信件</button>
-                            <div class="loading-indicator" id="loadingIndicator" style="display: none;">
-                                <p>信件生成中，请稍候...</p>
-                            </div>
-                        </div>
-                        <div class="letter-result" id="letterResult" style="display: none;">
-                            <h4>生成的信件</h4>
-                            <div class="letter-content" id="letterContent">
-                                <!-- 生成的信件内容将在这里显示 -->
-                            </div>
-                            <button class="btn btn-secondary" onclick="downloadLetter()">下载信件</button>
                         </div>
                     </div>
                     
@@ -462,7 +428,7 @@
                         <div class="carousel-inner">
                             <div class="carousel-item">
                                 <div style="text-align: center; margin-bottom: 20px;">
-                                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=black%20and%20white%20cartoon%20portrait%20of%20an%20elderly%20Chinese%20man%20with%20glasses%2C%20kind%20face%2C%20teacher%20style%2C%20simple%20line%20art&image_size=square" alt="张爷爷" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #34495e; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                                    <img src="images/生成卡通胸像.png" alt="张爷爷" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #34495e; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
                                 </div>
                                 <h3 style="text-align: center; margin-bottom: 15px;">张爷爷</h3>
                                 <p>享年85岁，生前是一名教师。他说："我一生教书育人，希望死后能继续为医学教育做贡献，让更多年轻人成为好医生。"</p>
@@ -547,21 +513,28 @@
                                     transparent 100%);
                             "></div>
                             <h3 style="
-                                text-shadow: 
-                                    1px 1px 2px rgba(0, 0, 0, 0.5),
-                                    0 0 10px rgba(255, 255, 255, 0.3);
-                                color: #2c3e50;
+                                font-family: 'FangSong', 'SimSun', 'KaiTi', 'YouYuan', serif;
+                                font-weight: 900;
+                                color: #1a252f;
+                                margin-bottom: 12px;
+                                font-size: 20px;
+                                letter-spacing: 3px;
+                            ">致敬所有</h3>
+                            <p style="
+                                font-family: 'FangSong', 'SimSun', 'KaiTi', 'YouYuan', serif;
+                                font-weight: 900;
+                                color: #1a252f;
+                                margin-bottom: 12px;
+                                font-size: 24px;
+                                letter-spacing: 4px;
+                            ">遗体捐献者</p>
+                            <p style="
+                                font-family: 'FangSong', 'SimSun', 'KaiTi', 'YouYuan', serif;
+                                font-weight: 900;
+                                color: #1a252f;
                                 margin-bottom: 15px;
-                            ">生命永恒</h3>
-                            <p style="
-                                text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
-                                color: #34495e;
-                                margin-bottom: 10px;
-                            ">致敬所有遗体捐献者</p>
-                            <p style="
-                                text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
-                                color: #34495e;
-                            ">你们的奉献，让生命延续</p>
+                                font-size: 16px;
+                            ">奉献，让生命延续</p>
                             <div style="
                                 position: absolute;
                                 bottom: 0;
@@ -574,8 +547,11 @@
                                     transparent 100%);
                             "></div>
                         </div>
+                        <div style="text-align: center; margin-bottom: 15px;">
+                            <img src="images/花.png" alt="献花" style="max-width: 150px; height: auto;">
+                        </div>
                         <div class="message-input-inline" style="display: flex; gap: 8px; margin-bottom: 15px;">
-                            <input type="text" id="flower-message" placeholder="输入致敬留言..." style="flex: 1; padding: 10px 15px; border: 2px solid #667eea; border-radius: 20px; font-size: 0.9rem; outline: none;">
+                            <input type="text" id="flower-message" placeholder="输入致敬留言..." style="flex: 1; padding: 10px 15px; border: 2px solid #667eea; border-radius: 20px; font-size: 0.9rem; outline: none; color: #E67E22;">
                             <button id="submit-flower-message" class="btn btn-primary" style="padding: 10px 25px; border-radius: 20px; font-size: 0.9rem;">发送</button>
                         </div>
                         <div class="flowers" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
@@ -1314,7 +1290,7 @@
             
             <!-- 按钮 -->
             <div style="padding: 0 35px 25px; text-align: center;">
-                <button onclick="confirmGameStart()" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: none; padding: 15px 50px; border-radius: 50px; font-size: 1.1rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(52,152,219,0.3); font-weight: 500;">
+                <button id="confirmStartBtn" onclick="confirmGameStart()" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: none; padding: 15px 50px; border-radius: 50px; font-size: 1.1rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(52,152,219,0.3); font-weight: 500;">
                     确定入职
                 </button>
             </div>

@@ -2136,12 +2136,19 @@ footer {
 
 /* 家属页面样式 */
 .family-content {
-    max-width: 800px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 30px;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 家属板块双列布局响应式 */
+@media (max-width: 1200px) {
+    .family-content > div[style*="grid"] {
+        grid-template-columns: 1fr !important;
+    }
 }
 
 .family-content h2 {
@@ -2359,26 +2366,31 @@ footer {
 }
 
 .flower-btn {
-    background-color: #e74c3c;
+    background: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
     color: white;
     border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 1rem;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
     margin-right: 10px;
+    box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4);
 }
 
 .flower-btn:hover {
-    background-color: #c0392b;
+    background: linear-gradient(135deg, #D35400 0%, #BA4A00 100%);
     transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(230, 126, 34, 0.6);
 }
 
 .flower-count {
-    font-size: 1.2rem;
-    color: #7f8c8d;
+    font-size: 1.5rem;
+    color: #E67E22;
     margin-left: 10px;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(230, 126, 34, 0.3);
 }
 
 .stories-section {
@@ -3126,7 +3138,7 @@ footer {
 /* 弹幕样式 - 变大 */
 @keyframes danmakuMove {
     from { right: -400px; }
-    to { right: 100%; }
+    to { right: 110%; }
 }
 
 @keyframes toastSlideIn {
@@ -3153,22 +3165,25 @@ footer {
 
 .danmaku-item {
     font-family: 'Microsoft YaHei', sans-serif;
-    padding: 12px 25px;
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-    border-radius: 25px;
+    padding: 8px 18px;
+    background: linear-gradient(135deg, rgba(44,62,80,0.85) 0%, rgba(52,73,94,0.85) 100%);
+    border-radius: 20px;
     color: white;
-    font-size: 18px;
-    font-weight: bold;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    font-size: 15px;
+    font-weight: 500;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
     white-space: nowrap;
     display: inline-flex;
     align-items: center;
+    max-width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .danmaku-item span {
-    font-size: 14px;
-    opacity: 0.7;
-    margin-right: 10px;
+    font-size: 12px;
+    opacity: 0.8;
+    margin-right: 8px;
     font-weight: normal;
 }
 

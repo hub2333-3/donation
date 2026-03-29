@@ -537,17 +537,14 @@ function initPageFunctions() {
     updateMyStoriesList();
     initFamilySettingsUI();
     
-    // 检查登录状态
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser) {
-        const uploadSection = document.querySelector('.upload-section');
-        if (uploadSection) {
-            uploadSection.style.display = 'block';
-        }
-        const myStoriesSection = document.querySelector('.my-stories-section');
-        if (myStoriesSection) {
-            myStoriesSection.style.display = 'block';
-        }
+    // 家属板块不再需要登录，直接显示上传和故事区域
+    const uploadSection = document.querySelector('.upload-section');
+    if (uploadSection) {
+        uploadSection.style.display = 'block';
+    }
+    const myStoriesSection = document.querySelector('.my-stories-section');
+    if (myStoriesSection) {
+        myStoriesSection.style.display = 'block';
     }
 }
 
@@ -700,10 +697,27 @@ window.togglePanel = togglePanel;
 // 开始游戏
 async function startGame() {
     console.log('开始游戏 函数被调用');
+    
+    // 禁用按钮并显示加载状态
+    const startBtn = document.getElementById('startGameBtn');
+    if (startBtn) {
+        startBtn.disabled = true;
+        startBtn.innerHTML = '⏳ 加载中...';
+        startBtn.style.opacity = '0.7';
+        startBtn.style.cursor = 'not-allowed';
+    }
+    
     // 检查是否已完成入职信息填写
     if (gameState.character.name && gameState.character.name !== 'null') {
         // 已入职，直接显示初始任务
         showInitialTaskModal();
+        // 恢复按钮状态（如果是第一次进入）
+        if (startBtn) {
+            startBtn.innerHTML = '继续游戏';
+            startBtn.disabled = false;
+            startBtn.style.opacity = '1';
+            startBtn.style.cursor = 'pointer';
+        }
     } else {
         // 显示精致的入职弹窗
         showGameStartModal();
@@ -770,12 +784,12 @@ async function confirmGameStart() {
     }
     
     // 获取确认按钮并禁用
-    const confirmBtn = document.querySelector('#game-start-modal button[onclick="confirmGameStart()"]');
+    const confirmBtn = document.getElementById('confirmStartBtn');
     if (confirmBtn) {
         confirmBtn.disabled = true;
-        confirmBtn.style.opacity = '0.6';
+        confirmBtn.innerHTML = '⏳ 入职中...';
+        confirmBtn.style.opacity = '0.7';
         confirmBtn.style.cursor = 'not-allowed';
-        confirmBtn.textContent = '入职中...';
     }
     
     // 显示加载动画
@@ -838,7 +852,7 @@ async function confirmGameStart() {
     }, 500);
 }
 
-// 确保 startGame 函数全局可用
+// 确保函数全局可用
 window.startGame = startGame;
 window.showGameStartModal = showGameStartModal;
 window.closeGameStartModal = closeGameStartModal;
@@ -5493,14 +5507,15 @@ function showDanmakuMessage(message) {
     danmakuItem.style.cssText = `
         position: absolute;
         right: -300px;
-        top: ${Math.random() * 80 + 10}%;
+        top: ${Math.random() * 40 + 5}%;
         white-space: nowrap;
         color: ${message.color};
-        font-size: 18px;
+        font-size: 16px;
         font-weight: bold;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        animation: danmakuMove 15s linear forwards;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        animation: danmakuMove 14s linear forwards;
         z-index: 100;
+        line-height: 1.2;
     `;
     danmakuItem.innerHTML = message.text;
     
@@ -5518,29 +5533,46 @@ function startDanmakuLoop() {
         clearInterval(danmakuInterval);
     }
     
-    // 每3秒显示一条弹幕
+    // 立即显示一条弹幕（不等待）
+    if (flowerMessages.length > 0) {
+        showDanmakuMessage(flowerMessages[Math.floor(Math.random() * flowerMessages.length)]);
+    }
+    
+    // 每1.2秒显示一条弹幕（适中密度）
     danmakuInterval = setInterval(() => {
         if (flowerMessages.length > 0) {
-            // 随机选择一条历史留言
-            const randomIndex = Math.floor(Math.random() * Math.min(5, flowerMessages.length));
-            const message = flowerMessages[flowerMessages.length - 1 - randomIndex];
+            // 随机选择一条留言
+            const randomIndex = Math.floor(Math.random() * flowerMessages.length);
+            const message = flowerMessages[randomIndex];
             showDanmakuMessage(message);
         }
-    }, 3000);
+    }, 1200);
 }
 
 // 加载默认留言（温和积极的纪念短句）
 function loadFlowerMessages() {
-    // 温和积极的纪念短句，不保存到本地
+    // 更多温和积极的纪念短句
     flowerMessages = [
-        { text: '愿温暖与希望永远相伴', time: '', color: '#e8d5b7' },
-        { text: '生命之光，永不熄灭', time: '', color: '#d4c4a8' },
-        { text: '用爱点亮每一个明天', time: '', color: '#c9b896' },
-        { text: '您的善举让世界更美好', time: '', color: '#beac84' },
-        { text: '感恩遇见，感谢奉献', time: '', color: '#b3a072' },
-        { text: '每一份爱都值得被铭记', time: '', color: '#a89460' },
-        { text: '希望如星光，照亮前行路', time: '', color: '#9d8850' },
-        { text: '因为有您，人间更温暖', time: '', color: '#927c40' }
+        { text: '愿温暖与希望永远相伴', time: '', color: '#f5e6d3' },
+        { text: '生命之光，永不熄灭', time: '', color: '#f0dfc4' },
+        { text: '用爱点亮每一个明天', time: '', color: '#ebd8b5' },
+        { text: '您的善举让世界更美好', time: '', color: '#e6d1a6' },
+        { text: '感恩遇见，感谢奉献', time: '', color: '#e1ca97' },
+        { text: '每一份爱都值得被铭记', time: '', color: '#dcc388' },
+        { text: '希望如星光，照亮前行路', time: '', color: '#d7bc79' },
+        { text: '因为有您，人间更温暖', time: '', color: '#d2b56a' },
+        { text: '缅怀伟大的灵魂', time: '', color: '#f2e2c8' },
+        { text: '您的爱心永远流传', time: '', color: '#eddab9' },
+        { text: '生命因您而精彩', time: '', color: '#e8d2aa' },
+        { text: '致敬无私的奉献', time: '', color: '#e3ca9b' },
+        { text: '永远铭记这份爱', time: '', color: '#dec28c' },
+        { text: '愿您安息，精神永存', time: '', color: '#d9ba7d' },
+        { text: '感谢您来过这个世界', time: '', color: '#d4b26e' },
+        { text: '捐献之光，温暖人间', time: '', color: '#cfaa5f' },
+        { text: '大爱无疆，感恩有您', time: '', color: '#f0e0d0' },
+        { text: '生命的意义因您而升华', time: '', color: '#ebd5c1' },
+        { text: '致敬最后的礼物', time: '', color: '#e6cab2' },
+        { text: '让爱继续传递', time: '', color: '#e1bfa3' }
     ];
 }
 
@@ -5649,27 +5681,18 @@ function closeAuthModal() {
     }
 }
 
-// 检查并跳转到家属页面
+// 检查并跳转到家属页面（无需登录）
 function checkAndGoToFamily() {
-    if (!currentUser) {
-        showAuthModal('login');
-        return;
-    }
-    
-    // 跳转到家属页面
+    // 直接跳转到家属页面
     showPage('family');
     
-    // 检查是否有上传过故事
+    // 初始化家属页面（默认使用云端API）
     setTimeout(() => {
-        const userStories = localStorage.getItem(`familyStories_${currentUser.username}`);
-        if (userStories && JSON.parse(userStories).length > 0) {
-            // 有上传过故事，显示问候弹窗
-            showFamilyGreeting();
-        }
-    }, 500);
+        initFamilySettingsUI();
+    }, 300);
 }
 
-// 用户登录
+// 用户登录（已保留但家属板块不再使用）
 function login(username, password) {
     // 模拟登录（实际项目中应调用后端API）
     const users = JSON.parse(localStorage.getItem('donationSimulatorUsers') || '[]');
